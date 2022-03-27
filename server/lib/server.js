@@ -20,7 +20,9 @@ app.all('*', (req, res) => {
   const trimmedPath = req.path.replace(/^\/+|\/+$/g, '')
   const method = req.method.toLowerCase()
 
-  const choseHandler = routes[trimmedPath] || routes.notFound
+  let choseHandler = routes[trimmedPath] || routes.notFound
+
+  choseHandler = trimmedPath.indexOf('public/') > -1 ? routes.public : choseHandler
 
   const data = {
     trimmedPath,
@@ -45,6 +47,14 @@ app.all('*', (req, res) => {
       case 'ejs':
         res.setHeader('Content-Type', 'text/html')
         res.render(payload.template, payload.data)
+        break
+      case 'css':
+        res.setHeader('Content-Type', 'text/css')
+        payloadString = payload
+        break
+      case 'woff':
+        res.setHeader('Content-Type', 'application/font-woff')
+        payloadString = payload
         break
       default:
         res.setHeader('Content-Type', 'application/json')
