@@ -1,6 +1,14 @@
-<html>
-  <body>
-    <h1>404</h1>
+<%- include('../template/_header.ejs'); %>
+<div class="vertical_center">
+  <center>
+    <h1><%= emoji %></h1>
+    <br />
+    <h3><%= statusCode %></h3>
+    <br />
     <p><%= message %></p>
-  </body>
-</html>
+    <br>
+    <a href="/">Go Home!</a>
+  </center>
+</div>
+  <%- include('../template/_footer.ejs'); %>
+</div>

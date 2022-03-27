@@ -1,0 +1,45 @@
+<%- include('../template/_header.ejs'); %>
+<div class="vertical_center" id="main">
+  <div class="login_page_div">
+    <h1>🎬 Login Twitch Board</h1>
+    <% const error = typeof errorMessage !== 'undefined' ? errorMessage : false; if (error) { %>
+    <alert><li class="warn_list"><%= error %></li></alert>
+    <% } else { %>
+    <alert><li class="warn_list" style="display: none"></li></alert>
+    <% } %>
+    <form action="/login" method="post" id="login_form">
+      <ul>
+        <li class="mail_list"><input type="email" name="email" id="email" placeholder="Email" /></li>
+        <li class="password_list"><input type="password" name="password" id="password" placeholder="Password" /></li>
+      </ul>
+      <br />
+      <ul>
+        <li class="login_list"><a id="login_submit">Login in</a></li>
+        <li class="register_list"><a href="/register">Register</a></li>
+      </ul>
+    </form>
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $('#login_submit').click(function () {
+      if ($('#email').val() == '' || $('#password').val() == '') {
+        $('.warn_list').text('Please fill in all fields').css('display', 'list-item')
+        return false
+      } else {
+        if ($('#email').val().indexOf('@') == -1) {
+          $('.warn_list').text('Please enter a valid email').css('display', 'list-item')
+          return false
+        } else {
+          if ($('#password').val().length < 6) {
+            $('.warn_list').text('Password must be at least 6 characters').css('display', 'list-item')
+            return false
+          } else {
+            $('#login_form').submit()
+          }
+        }
+      }
+    })
+  })
+</script>
+<%- include('../template/_footer.ejs'); %>
