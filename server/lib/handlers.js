@@ -21,8 +21,11 @@ handlers.index = (data, callback) => {
 
 handlers.login = async (data, callback) => {
   const contentType = 'ejs'
-  let payload
-  if (data.method === 'get') {
+  let payload = {}
+
+  if (await helpers.exist(data.session.id)) {
+    payload = { template: 'index' }
+  } else if (data.method === 'get') {
     payload = { template: 'login' }
   } else if (data.method === 'post') {
     const response = await login(data)

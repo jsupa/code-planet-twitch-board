@@ -2,6 +2,7 @@ const crypto = require('crypto')
 const fs = require('fs')
 
 const config = require('./config')
+const _data = require('./data')
 
 const helpers = {}
 
@@ -29,5 +30,16 @@ helpers.hash = str => {
     return false
   }
 }
+
+helpers.exist = str =>
+  new Promise(resolve => {
+    _data.read('sessions', str, (err, data) => {
+      if (!err && data) {
+        resolve(true)
+      } else {
+        resolve(false)
+      }
+    })
+  })
 
 module.exports = helpers
