@@ -24,7 +24,6 @@ helpers.getStaticAsset = (fileName, callback) => {
 helpers.hash = str => {
   if (typeof str === 'string' && str.length > 0) {
     const hash = crypto.createHmac('sha256', config.hashingSecret).update(str).digest('hex')
-    console.log(hash)
     return hash
   } else {
     return false
