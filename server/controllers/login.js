@@ -4,12 +4,24 @@ const helpers = require('../lib/helpers')
 const login = data =>
   new Promise(resolve => {
     const user = helpers.hash(data.body.email)
+    const password = helpers.hash(data.body.password)
+    let payload = {}
+
     _data.read('users', user, (err, userData) => {
-      if (!err && userData) {
-        resolve({ errorMessage: userData.username })
+      if (!err && userData.password === password) {
+        payload = {
+          template: 'index'
+        }
       } else {
-        resolve({ errorMessage: 'Invalid email or password' })
+        payload = {
+          template: 'login',
+          data: {
+            errorMessage: `Invalid email or password`
+          }
+        }
       }
+
+      resolve(payload)
     })
   })
 

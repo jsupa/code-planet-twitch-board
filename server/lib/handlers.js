@@ -14,7 +14,7 @@ handlers.notFound = (data, callback) => {
 handlers.index = (data, callback) => {
   const contentType = 'ejs'
 
-  const payload = { template: 'index' }
+  const payload = { template: 'index', data: { some: data } }
 
   callback(200, payload, contentType)
 }
@@ -22,11 +22,11 @@ handlers.index = (data, callback) => {
 handlers.login = async (data, callback) => {
   const contentType = 'ejs'
   let payload
-
   if (data.method === 'get') {
     payload = { template: 'login' }
   } else if (data.method === 'post') {
-    payload = { template: 'login', data: await login(data) }
+    const response = await login(data)
+    payload = { template: response.template, data: response.data }
   }
 
   callback(200, payload, contentType)
