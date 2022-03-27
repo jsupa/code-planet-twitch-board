@@ -2,6 +2,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const ip = require('ip')
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
 
 const config = require('./config')
 const routes = require('./routes')
@@ -12,11 +14,20 @@ const server = {}
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use(cookieParser())
+app.use(
+  session({
+    secret: '34SDgsdgspxxxxxxxdfsG', // just a long random string
+    resave: false,
+    saveUninitialized: true
+  })
+)
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
 
 app.all('*', (req, res) => {
-  const { headers, body, query } = req
+  // console.log(req.session.id)
+  const { headers, body, query, session } = req
   const trimmedPath = req.path.replace(/^\/+|\/+$/g, '')
   const method = req.method.toLowerCase()
 
@@ -29,7 +40,8 @@ app.all('*', (req, res) => {
     headers,
     body,
     query,
-    method
+    method,
+    session
   }
 
   choseHandler(data, (statusCode, payload, contentType) => {
