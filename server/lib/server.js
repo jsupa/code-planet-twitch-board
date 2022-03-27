@@ -58,7 +58,7 @@ app.all('*', (req, res) => {
         break
       case 'ejs':
         res.setHeader('Content-Type', 'text/html')
-        res.render(payload.template, payload.data)
+        res.render(payload.template, { rawData: data, data: payload.data })
         break
       case 'css':
         res.setHeader('Content-Type', 'text/css')

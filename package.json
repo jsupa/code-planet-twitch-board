@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon index.js --ignore data/",
     "start": "NODE_ENV=production node index.js",
     "lint:check": "eslint . --ignore-path .gitignore --ext .js",
     "lint:staged": "lint-staged",

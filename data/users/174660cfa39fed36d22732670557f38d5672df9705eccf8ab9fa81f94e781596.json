@@ -1,1 +1,6 @@
-{ "username": "Demo" }
+{
+  "username": "Demo",
+  "password": "25593b9b912571e4f7d8c7eaabbdd5024700a72d7d15ed04e6616f333e2b2b49",
+  "last_session": "cuk",
+  "save_session": []
+}

@@ -14,7 +14,7 @@ handlers.notFound = (data, callback) => {
 handlers.index = (data, callback) => {
   const contentType = 'ejs'
 
-  const payload = { template: 'index', data: { some: data } }
+  const payload = { template: 'index' }
 
   callback(200, payload, contentType)
 }

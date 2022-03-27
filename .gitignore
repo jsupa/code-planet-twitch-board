@@ -1,3 +1,4 @@
 /node_modules
 .eslintcache
 .cache_ggshield
+data/sessions/
