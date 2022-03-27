@@ -83,6 +83,12 @@ p {
 
 .warn_list {
   list-style: '✋ ';
+  color: #f29595;
+}
+
+.message_list {
+  list-style: '💬 ';
+  color: #b5b4f2;
 }
 
 #login_form ul li {
@@ -101,7 +107,6 @@ p {
 }
 
 alert li {
-  color: F29595;
   background-color: #222830;
   padding: 7px;
   border-radius: 5px;

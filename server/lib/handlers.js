@@ -23,7 +23,7 @@ handlers.login = async (data, callback) => {
   const contentType = 'ejs'
   let payload = {}
 
-  if (await helpers.exist(data.session.id)) {
+  if (await helpers.existSession(data.session.id)) {
     payload = { template: 'index' }
   } else if (data.method === 'get') {
     payload = { template: 'login' }
@@ -31,6 +31,18 @@ handlers.login = async (data, callback) => {
     const response = await login(data)
     payload = { template: response.template, data: response.data }
   }
+
+  callback(200, payload, contentType)
+}
+
+handlers.logout = async (data, callback) => {
+  const contentType = 'ejs'
+
+  if (await helpers.existSession(data.session.id)) {
+    await helpers.deleteSession(data.session.id)
+  }
+
+  const payload = { template: 'login', data: { message: 'You have been logged out.' } }
 
   callback(200, payload, contentType)
 }

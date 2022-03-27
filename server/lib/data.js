@@ -67,4 +67,14 @@ _data.create = (dir, file, data, callback) => {
   })
 }
 
+_data.delete = (dir, file, callback) => {
+  fs.unlink(`${_data.baseDir + dir}/${file}.json`, err => {
+    if (!err) {
+      callback(false)
+    } else {
+      callback('Error deleting file')
+    }
+  })
+}
+
 module.exports = _data

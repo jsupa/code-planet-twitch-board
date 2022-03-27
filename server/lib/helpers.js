@@ -31,10 +31,21 @@ helpers.hash = str => {
   }
 }
 
-helpers.exist = str =>
+helpers.existSession = str =>
   new Promise(resolve => {
     _data.read('sessions', str, (err, data) => {
       if (!err && data) {
+        resolve(true)
+      } else {
+        resolve(false)
+      }
+    })
+  })
+
+helpers.deleteSession = str =>
+  new Promise(resolve => {
+    _data.delete('sessions', str, err => {
+      if (!err) {
         resolve(true)
       } else {
         resolve(false)

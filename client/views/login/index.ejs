@@ -4,8 +4,11 @@
     <h1>🎬 Login Twitch Board</h1>
     <br />
     <br />
-    <% const error = typeof data?.errorMessage !== 'undefined' ? data.errorMessage : false; if (error) { %>
+    <% const error = typeof data?.errorMessage !== 'undefined' ? data.errorMessage : false; const message = typeof
+    data?.message !== 'undefined' ? data.message : false %> <% if (error) { %>
     <alert><li class="warn_list"><%= error %></li></alert>
+    <% } else if (message){ %>
+    <alert><li class="message_list"><%= message %></li></alert>
     <% } else { %>
     <alert><li class="warn_list" style="display: none"></li></alert>
     <% } %>
