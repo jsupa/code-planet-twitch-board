@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const ip = require('ip')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
+const expressLayouts = require('express-ejs-layouts')
 
 const config = require('./config')
 const routes = require('./routes')
@@ -25,6 +26,9 @@ app.use(
 )
 
 app.use(express.static('./client/public'))
+app.use(expressLayouts)
+
+app.set('layout', './template')
 
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
