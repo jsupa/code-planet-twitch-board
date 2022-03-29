@@ -14,6 +14,7 @@ const server = {}
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
 app.use(cookieParser())
 app.use(
   session({
@@ -22,18 +23,18 @@ app.use(
     saveUninitialized: true
   })
 )
+
+app.use(express.static('./client/public'))
+
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
 
 app.all('*', (req, res) => {
-  // console.log(req.session.id)
   const { headers, body, query, session } = req
   const trimmedPath = req.path.replace(/^\/+|\/+$/g, '')
   const method = req.method.toLowerCase()
 
-  let choseHandler = routes[trimmedPath] || routes.notFound
-
-  choseHandler = trimmedPath.indexOf('public/') > -1 ? routes.public : choseHandler
+  const choseHandler = routes[trimmedPath] || routes.notFound
 
   const data = {
     trimmedPath,

@@ -47,30 +47,4 @@ handlers.logout = async (data, callback) => {
   callback(200, payload, contentType)
 }
 
-handlers.public = (data, callback) => {
-  if (data.method === 'get') {
-    const trimmedAssetName = data.trimmedPath.replace('public/', '').trim()
-    if (trimmedAssetName.length > 0) {
-      helpers.getStaticAsset(trimmedAssetName, (err, data) => {
-        if (!err && data) {
-          let contentType = 'plain'
-          switch (trimmedAssetName.split('.').pop()) {
-            case 'css':
-              contentType = 'css'
-              break
-            case 'woff':
-              contentType = 'woff'
-              break
-            default:
-              contentType = 'plain'
-          }
-          callback(200, data, contentType)
-        } else {
-          callback(404)
-        }
-      })
-    }
-  }
-}
-
 module.exports = handlers
