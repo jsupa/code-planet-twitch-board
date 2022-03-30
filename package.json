@@ -37,6 +37,7 @@
     "express": "^4.17.3",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.2",
+    "express-session-json": "^0.0.8",
     "ip": "^1.1.5",
     "ws": "^8.5.0"
   }
