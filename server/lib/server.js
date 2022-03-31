@@ -35,13 +35,17 @@ app.use(express.static('./client/public'))
 app.use(expressLayouts)
 
 app.set('layout', './template')
-app.set('trust proxy', 1)
+app.set('trust proxy', true)
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
 
 app.all('*', (req, res) => {
-  const { headers, body, query, session } = req
+  const { headers, body, query, session, ip } = req
   session.views = session.views ? session.views + 1 : 1
+  session.ip = ip
+  if (!session.ips) session.ips = []
+  session.ips.push(ip)
+  session.ips = [...new Set(session.ips)]
   const trimmedPath = req.path.replace(/^\/+|\/+$/g, '')
   const method = req.method.toLowerCase()
 
