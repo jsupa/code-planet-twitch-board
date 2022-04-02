@@ -2,8 +2,9 @@
   <center>
     <h1>hi</h1>
     <br />
-    <p><%= rawData.session.id %></p>
+    <img class="rounded w70px" src="<%= rawData.session.passport?.user.profileImageUrl  %> " alt="" />
     <br />
-    <alert><li class="message_list">Views: <%= rawData.session.views %></li></alert>
+    <li class="warn alert"><%= rawData.session.passport?.user.userName %></li>
+    <li class="message alert">Views: <%= rawData.session.passport?.user._json.data[0].view_count %></li>
   </center>
 </div>
