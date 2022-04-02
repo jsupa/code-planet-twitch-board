@@ -2,3 +2,5 @@
 .eslintcache
 .cache_ggshield
 data/sessions/
+app.env
+data/express-sessions.json

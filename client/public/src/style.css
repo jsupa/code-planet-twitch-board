@@ -45,26 +45,27 @@ a:hover {
   justify-content: center;
   align-items: center;
   height: 100%;
-}
-
-p {
-  color: #c9d1d9;
-}
-
-#main {
-  font-size: 1em;
-  display: grid;
   width: 100%;
-  margin: 0 auto;
-  height: 100%;
+  font-size: 1em;
   max-width: 1000px;
   max-height: 800px;
+  margin: 0 auto;
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  align-items: center;
 }
-
+center {
+  min-width: 250px;
+}
+p {
+  color: #c9d1d9;
+}
+.rounded {
+  border-radius: 100px;
+}
+.w70px {
+  width: 70px;
+}
 .mail_list {
   list-style: '📧 ';
 }
@@ -81,12 +82,12 @@ p {
   list-style: '🤝 ';
 }
 
-.warn_list {
+.warn {
   list-style: '✋ ';
   color: #f29595;
 }
 
-.message_list {
+.message {
   list-style: '💬 ';
   color: #b5b4f2;
 }
@@ -106,11 +107,12 @@ p {
   outline: none;
 }
 
-alert li {
+.alert {
   background-color: #222830;
   padding: 7px;
   border-radius: 5px;
-  margin: 0 0 30px 0;
+  margin: 15px 0 15px 0;
+  text-align: center;
 }
 
 .login_page_div {

@@ -1,15 +1,15 @@
-<div class="vertical_center" id="main">
+<div class="vertical_center">
   <div class="login_page_div">
     <h1>🎬 Login Twitch Board</h1>
     <br />
     <br />
     <% const error = typeof data?.errorMessage !== 'undefined' ? data.errorMessage : false; const message = typeof
     data?.message !== 'undefined' ? data.message : false %> <% if (error) { %>
-    <alert><li class="warn_list"><%= error %></li></alert>
+    <li class="warn alert"><%= error %></li>
     <% } else if (message){ %>
-    <alert><li class="message_list"><%= message %></li></alert>
+    <li class="message alert"><%= message %></li>
     <% } else { %>
-    <alert><li class="warn_list" style="display: none"></li></alert>
+    <li class="warn alert" style="display: none"></li>
     <% } %>
     <form action="/login" method="post" id="login_form">
       <ul>

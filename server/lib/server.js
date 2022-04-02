@@ -5,8 +5,10 @@ const ip = require('ip')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const expressLayouts = require('express-ejs-layouts')
+const passport = require('passport')
 // ! v buducnosti prejsť na mongo alebo redis
 const JsonStore = require('express-session-json')(session)
+const twitchStrategy = require('./passport-twitch').Strategy
 
 const config = require('./config')
 const routes = require('./routes')
@@ -39,7 +41,38 @@ app.set('trust proxy', true)
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
 
+passport.use(
+  new twitchStrategy(
+    {
+      clientID: config.twitch.clientID,
+      clientSecret: config.twitch.clientSecret,
+      callbackURL: config.twitch.callbackURL,
+      scope: 'user_read'
+    },
+    (accessToken, refreshToken, profile, done) => done(null, profile)
+  )
+)
+
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+
+passport.deserializeUser((user, done) => {
+  done(null, user)
+})
+
+app.get('/auth/twitch', passport.authenticate('twitch'))
+
+app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/' }), (req, res) => {
+  res.redirect('/')
+})
+
+// server.x = (req, res) => {
+//   req.session.neviem = 'ahoj'
+// }
+
 app.all('*', (req, res) => {
+  // server.x(req, res)
   const { headers, body, query, session, ip } = req
   session.views = session.views ? session.views + 1 : 1
   session.ip = ip
