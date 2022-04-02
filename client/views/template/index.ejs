@@ -1,3 +1,4 @@
+<% const message = data?.alert ? data?.alert.message : false; %>
 <html>
   <head>
     <title>🪐 Code Planet</title>
@@ -18,6 +19,10 @@
     </style>
   </head>
   <body>
-    <%- body %>
+    <div class="vertical_center">
+      <% if (message) { %>
+      <li class="alert message"></li>
+      <% } %><%- body %>
+    </div>
   </body>
 </html>

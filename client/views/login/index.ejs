@@ -1,28 +1,17 @@
-<div class="vertical_center">
-  <div class="login_page_div">
-    <h1>🎬 Login Twitch Board</h1>
+<div class="login_page_div">
+  <h1>🎬 Login Twitch Board</h1>
+  <br />
+  <form action="/login" method="post" id="login_form">
+    <ul>
+      <li class="mail_list"><input type="email" name="email" id="email" placeholder="Email" /></li>
+      <li class="password_list"><input type="password" name="password" id="password" placeholder="Password" /></li>
+    </ul>
     <br />
-    <br />
-    <% const error = typeof data?.errorMessage !== 'undefined' ? data.errorMessage : false; const message = typeof
-    data?.message !== 'undefined' ? data.message : false %> <% if (error) { %>
-    <li class="warn alert"><%= error %></li>
-    <% } else if (message){ %>
-    <li class="message alert"><%= message %></li>
-    <% } else { %>
-    <li class="warn alert" style="display: none"></li>
-    <% } %>
-    <form action="/login" method="post" id="login_form">
-      <ul>
-        <li class="mail_list"><input type="email" name="email" id="email" placeholder="Email" /></li>
-        <li class="password_list"><input type="password" name="password" id="password" placeholder="Password" /></li>
-      </ul>
-      <br />
-      <ul>
-        <li class="login_list"><a id="login_submit">Login in</a></li>
-        <li class="register_list"><a href="/register">Register</a></li>
-      </ul>
-    </form>
-  </div>
+    <ul>
+      <li class="login_list"><a id="login_submit">Login in</a></li>
+      <li class="register_list"><a href="/register">Register</a></li>
+    </ul>
+  </form>
 </div>
 <script>
   $(document).ready(function () {

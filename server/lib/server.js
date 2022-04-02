@@ -8,6 +8,7 @@ const expressLayouts = require('express-ejs-layouts')
 const passport = require('passport')
 // ! v buducnosti prejsť na mongo alebo redis
 const JsonStore = require('express-session-json')(session)
+
 const twitchStrategy = require('./passport-twitch').Strategy
 
 const config = require('./config')
@@ -49,7 +50,10 @@ passport.use(
       callbackURL: config.twitch.callbackURL,
       scope: 'user_read'
     },
-    (accessToken, refreshToken, profile, done) => done(null, profile)
+    (accessToken, refreshToken, profile, done) => {
+      console.log(profile)
+      done(null, profile)
+    }
   )
 )
 
@@ -93,40 +97,42 @@ app.all('*', (req, res) => {
     session
   }
 
-  choseHandler(data, (statusCode, payload, contentType) => {
-    contentType = typeof contentType === 'string' ? contentType : 'json'
-    statusCode = typeof statusCode === 'number' ? statusCode : 200
+  choseHandler(data, req, res)
+  // console.log(res)
+  // choseHandler(data, (statusCode, payload, contentType) => {
+  //   contentType = typeof contentType === 'string' ? contentType : 'json'
+  //   statusCode = typeof statusCode === 'number' ? statusCode : 200
 
-    let payloadString = ''
+  //   let payloadString = ''
 
-    switch (contentType) {
-      case 'json':
-        res.setHeader('Content-Type', 'application/json')
-        payload = typeof payload === 'object' ? payload : {}
-        payloadString = JSON.stringify(payload)
-        break
-      case 'ejs':
-        res.setHeader('Content-Type', 'text/html')
-        res.render(payload.template, { rawData: data, data: payload.data })
-        break
-      case 'css':
-        res.setHeader('Content-Type', 'text/css')
-        payloadString = payload
-        break
-      case 'woff':
-        res.setHeader('Content-Type', 'application/font-woff')
-        payloadString = payload
-        break
-      default:
-        res.setHeader('Content-Type', 'application/json')
-        payloadString = JSON.stringify({ error: 'Content-Type not supported' })
-    }
+  //   switch (contentType) {
+  //     case 'json':
+  //       res.setHeader('Content-Type', 'application/json')
+  //       payload = typeof payload === 'object' ? payload : {}
+  //       payloadString = JSON.stringify(payload)
+  //       break
+  //     case 'ejs':
+  //       res.setHeader('Content-Type', 'text/html')
+  //       res.render(payload.template, { rawData: data, data: payload.data })
+  //       break
+  //     case 'css':
+  //       res.setHeader('Content-Type', 'text/css')
+  //       payloadString = payload
+  //       break
+  //     case 'woff':
+  //       res.setHeader('Content-Type', 'application/font-woff')
+  //       payloadString = payload
+  //       break
+  //     default:
+  //       res.setHeader('Content-Type', 'application/json')
+  //       payloadString = JSON.stringify({ error: 'Content-Type not supported' })
+  //   }
 
-    if (contentType !== 'ejs') res.writeHead(statusCode)
-    if (contentType !== 'ejs') res.end(payloadString)
+  //   if (contentType !== 'ejs') res.writeHead(statusCode)
+  //   if (contentType !== 'ejs') res.end(payloadString)
 
-    console.log(`[${method.toUpperCase()}] /${trimmedPath} (${statusCode}) - `)
-  })
+  //   console.log(`[${method.toUpperCase()}] /${trimmedPath} (${statusCode}) - `)
+  // })
 })
 
 server.init = () => {

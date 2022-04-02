@@ -3,48 +3,39 @@ const login = require('../controllers/login')
 
 const handlers = {}
 
-handlers.notFound = (data, callback) => {
-  const contentType = 'ejs'
+handlers.notFound = (data, req, res) => {
+  const payload = { emoji: '🚀', statusCode: 404, message: "You're lost." }
 
-  const payload = { template: 'errors/404', data: { emoji: '🚀', statusCode: 404, message: "You're lost." } }
-
-  callback(404, payload, contentType)
+  res.status(404).render('errors/404', { data, payload })
 }
 
-handlers.index = (data, callback) => {
-  const contentType = 'ejs'
-
-  const payload = { template: 'index' }
-
-  callback(200, payload, contentType)
+handlers.index = (data, req, res) => {
+  res.render('index', { data })
 }
 
-handlers.login = async (data, callback) => {
-  const contentType = 'ejs'
+handlers.login = async (data, req, res) => {
+  data.contentType = 'ejs'
+  let template
   let payload = {}
 
-  if (await helpers.existSession(data.session.id)) {
-    payload = { template: 'index' }
-  } else if (data.method === 'get') {
-    payload = { template: 'login' }
+  if (data.method === 'get') {
+    template = 'login'
   } else if (data.method === 'post') {
     const response = await login(data)
-    payload = { template: response.template, data: response.data }
+    template = response.template
+    payload = response.data
   }
-
-  callback(200, payload, contentType)
+  res.render(template, { data, payload })
 }
 
-handlers.logout = async (data, callback) => {
-  const contentType = 'ejs'
-
-  if (await helpers.existSession(data.session.id)) {
-    await helpers.deleteSession(data.session.id)
-  }
-
-  const payload = { template: 'login', data: { message: 'You have been logged out.' } }
-
-  callback(200, payload, contentType)
+handlers.logout = (data, req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.redirect('/')
+    }
+  })
 }
 
 module.exports = handlers

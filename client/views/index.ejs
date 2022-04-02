@@ -1,10 +1,6 @@
-<div class="vertical_center">
-  <center>
-    <h1>hi</h1>
-    <br />
-    <img class="rounded w70px" src="<%= rawData.session.passport?.user.profileImageUrl  %> " alt="" />
-    <br />
-    <li class="warn alert"><%= rawData.session.passport?.user.userName %></li>
-    <li class="message alert">Views: <%= rawData.session.passport?.user._json.data[0].view_count %></li>
-  </center>
-</div>
+<h1>hi</h1>
+<br />
+<img class="rounded w70px" src="<%= data.session.passport?.user.profileImageUrl  %> " alt="" />
+<br />
+<li class="warn alert"><%= data.session.passport?.user.userName %></li>
+<li class="message alert">Views: <%= data.session.passport?.user._json.data[0].view_count %></li>
