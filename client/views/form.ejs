@@ -1,1 +1,58 @@
-<h1>Hello Form</h1>
+<div id="column" class="owelflow_hidden">
+  <form method="post">
+    <% FORM_ROWS.forEach(row => { %>
+    <div class="form_object">
+      <% Object.keys(row).forEach(input_key => { %>
+      <% const input_object = row[input_key]; %>
+      <% if (input_object.type === 'text') { %>
+        <input 
+          type="text"
+          name="<%= input_key %>"
+          placeholder="<%= input_object.placeholder%>"
+          value="<%= input_object?.default %>"
+          <%= input_object?.disabled && 'disabled' %>
+          class="<%= input_object?.extraClass %>"
+        />
+      <% } else if (input_object.type === 'color'){ %>
+        <input
+          type="color"
+          name="<%= input_key %>"
+          value="<%= input_object?.default %>"
+        />
+      <% } else if (input_object.type === 'link'){ %>
+        <input
+          type="url"
+          name="<%= input_key %>"
+          value="<%= input_object?.default %>"
+          <%= input_object?.disabled && 'disabled' %>
+          placeholder="<%= input_object.placeholder%>"
+          class="input_link_css <%= input_object?.extraClass %>"
+        />
+        <% }%>
+      <% }) %>
+    </div>
+    <% }) %>
+    <div class="form_object buttons">
+      <button type="submit" class="submit_button">Submit</button>
+    </div>
+  </form>
+  <div class="legend">
+    <ul>
+      <li><b>{user_name}</b> twitch user name.</li>
+      <li><b>{title}</b> twitch stream title.</li>
+      <li><b>{time}</b> current time e.g. <i>(Sun 3 Apr 23:13)</i>.</li>
+    </ul>
+  </div>
+  <button class="legend_button" onclick="toggleMoveToTop()">Legend</button>
+</div>
+<script>
+  function toggleMoveToTop(){
+    if (document.getElementsByTagName('form')[0].style.top == '-1000px'){
+      document.getElementsByTagName('form')[0].style.top = '0px';
+      document.getElementsByClassName('legend')[0].style.top = '-1000px';
+    } else {
+      document.getElementsByClassName('legend')[0].style.top = '0px';
+      document.getElementsByTagName('form')[0].style.top = '-1000px';
+    }
+  }
+</script>
