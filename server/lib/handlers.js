@@ -1,19 +1,23 @@
 const handlers = {}
 
-handlers.notFound = (data, callback) => {
-  const json = data.query.json !== undefined
-  const contentType = json ? 'json' : 'ejs'
+handlers.notFound = (data, req, res) => {
+  const payload = { emoji: '🚀', statusCode: 404, message: "You're lost." }
 
-  const dataJson = { error: '🔎 Not found' }
-  const dataPug = { template: 'errors/404', data: { message: '🔎 Not found' } }
-
-  const payload = json ? dataJson : dataPug
-
-  callback(404, payload, contentType)
+  res.status(404).render('errors/404', { data, payload })
 }
 
-handlers.index = (data, callback) => {
-  callback(200, { message: 'Hello Planet 🪐' }, 'json')
+handlers.index = (data, req, res) => {
+  res.render('index', { data })
+}
+
+handlers.logout = (data, req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.redirect('/')
+    }
+  })
 }
 
 module.exports = handlers

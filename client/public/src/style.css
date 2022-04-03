@@ -1,0 +1,140 @@
+@charset "UTF-8";
+* {
+  font-style: normal;
+  font-weight: normal;
+  font-family: Menlo;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+}
+
+body {
+  background: #161b22;
+  padding: 0 40px;
+}
+#main {
+  display: grid;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  max-width: 1000px;
+  max-height: 800px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#header {
+  /* background-color: blue; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+}
+#footer {
+  /* background-color: orange; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+a {
+  cursor: pointer;
+  color: #b5b4f2;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.link::after {
+  content: '';
+  background: #b5b4f2;
+  width: calc(100% + 10px);
+  z-index: -1;
+  height: 0;
+  position: absolute;
+  bottom: -4px;
+  left: -5px;
+  transition: all 0.3s;
+}
+.alerts {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  top: 100px;
+}
+.link:hover::after {
+  height: calc(100% + 8px);
+}
+.m10h {
+  margin: 10px 0;
+}
+.link:hover {
+  color: #161b22;
+}
+.vertical_center {
+  /* background-color: red; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1em;
+  flex-wrap: wrap;
+  align-content: center;
+}
+center {
+  min-width: 250px;
+}
+.plugin_button {
+  background: #2458a2;
+  padding: 6px 12px;
+  margin: 5px;
+  border-radius: 5px;
+}
+p {
+  color: #c9d1d9;
+}
+.rounded {
+  border-radius: 100px;
+}
+.w70px {
+  width: 70px;
+}
+.w50px {
+  width: 50px;
+}
+.twitch_login {
+  font-size: 0.8em;
+  font-size: 20px;
+  background: #6b6a98;
+  color: #161b22;
+  padding: 5px 10px;
+  transition: all 0.3s;
+  border-radius: 5px;
+}
+.twitch_login:hover {
+  background: #b5b4f2;
+}
+
+.twitch_login i {
+  color: #161b22;
+}
+
+.warn {
+  list-style: '✋ ';
+  color: #f29595;
+}
+
+.message {
+  list-style: '💬 ';
+  color: #b5b4f2;
+}
+
+.alert {
+  background-color: #222830;
+  padding: 7px;
+  border-radius: 5px;
+  margin: 15px 0 15px 0;
+}
