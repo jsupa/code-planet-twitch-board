@@ -73,6 +73,8 @@ app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedire
 //   req.session.neviem = 'ahoj'
 // }
 
+routes.init()
+
 app.all('*', (req, res) => {
   // server.x(req, res)
   const { headers, body, query, session, ip } = req

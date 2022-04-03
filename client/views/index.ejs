@@ -1,5 +1,4 @@
-<div class="plugin_button">Discord Online status</div>
-<div class="plugin_button">Commands</div>
-<div class="plugin_button">Points</div>
-<div class="plugin_button">Ko-Fi</div>
-<div class="plugin_button">Crypto</div>
+<% data.plugin_buttons?.forEach(button => { const buttonName = button.charAt(0).toUpperCase() + button.replace('.js',
+'').replace(/_/g, ' ').slice(1) %>
+<a href="/<%= button.replace('.js', '') %>"><div class="plugin_button"><%= buttonName %></div></a>
+<% }) %>

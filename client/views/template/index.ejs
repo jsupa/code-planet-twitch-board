@@ -19,6 +19,10 @@
     </style>
   </head>
   <body>
+    <div class="preloader-wrapper">
+      <div class="preloader">🚀</div>
+    </div>
+
     <div id="main">
       <% if (data.session.passport?.user){ %>
       <div id="header"><%- include('_header') %></div>
@@ -27,5 +31,14 @@
       <% }%>
       <div id="footer"><%- include('login_button'); %></div>
     </div>
+    <script>
+      $(document).ready($ => {
+        $('body').addClass('preloader-site')
+      })
+      $(window).on('load', () => {
+        $('.preloader-wrapper').fadeOut()
+        $('body').removeClass('preloader-site')
+      })
+    </script>
   </body>
 </html>

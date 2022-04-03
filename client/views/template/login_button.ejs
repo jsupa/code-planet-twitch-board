@@ -4,7 +4,14 @@
 </ul>
 <% } else { %>
 <ul class="account_buttons">
-  <a class="twitch_login" href="/settings"><i class="fa-solid fa-gear"></i></a>
+  <a class="twitch_login" href="/"><i class="fa-solid fa-house"></i></a>
+  <% if (data.trimmedPath !== ''){ %> <% if (!data.trimmedPath.includes('settings/')){ %>
+  <a class="twitch_login" href="/settings/<%= data.trimmedPath %>"><i class="fa-solid fa-gear"></i></a>
+  <% } else { %>
+  <a class="twitch_login" href="<%= data.trimmedPath.replace('settings','') %> "
+    ><i class="fa-solid fa-backward"></i
+  ></a>
+  <% } %> <% } %>
   <a class="twitch_login" href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
 </ul>
 <% } %>
