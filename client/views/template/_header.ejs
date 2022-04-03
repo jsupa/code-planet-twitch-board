@@ -1,0 +1,5 @@
+<% const userName = data.session.passport?.user.userName %>
+<div class="header">
+  <img class="w50px rounded center m10h" src="<%= data.session.passport?.user.profileImageUrl  %> " />
+  <h2 class="m10h">👋 Welcome back <a href="https://twitch.tv/<%= userName %>" class="link"><%= userName %></a></h2>
+</div>

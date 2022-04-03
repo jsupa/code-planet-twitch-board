@@ -1,8 +1,8 @@
-<% const message = data?.alert ? data?.alert.message : false; %>
 <html>
   <head>
     <title>🪐 Code Planet</title>
     <link rel="stylesheet" href="/src/style.css" />
+    <script src="https://kit.fontawesome.com/7f030e230a.js" crossorigin="anonymous"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="author" content="Jakub Š. &lt;hello@code-planet.eu&gt;" />
@@ -19,10 +19,13 @@
     </style>
   </head>
   <body>
-    <div class="vertical_center">
-      <% if (message) { %>
-      <li class="alert message"></li>
-      <% } %><%- body %>
+    <div id="main">
+      <% if (data.session.passport?.user){ %>
+      <div id="header"><%- include('_header') %></div>
+      <% } %> <% if (data.session.passport?.user){ %>
+      <div class="vertical_center"><%- body %></div>
+      <% }%>
+      <div id="footer"><%- include('login_button'); %></div>
     </div>
   </body>
 </html>

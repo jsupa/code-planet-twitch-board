@@ -1,6 +1,3 @@
-const helpers = require('./helpers')
-const login = require('../controllers/login')
-
 const handlers = {}
 
 handlers.notFound = (data, req, res) => {
@@ -11,21 +8,6 @@ handlers.notFound = (data, req, res) => {
 
 handlers.index = (data, req, res) => {
   res.render('index', { data })
-}
-
-handlers.login = async (data, req, res) => {
-  data.contentType = 'ejs'
-  let template
-  let payload = {}
-
-  if (data.method === 'get') {
-    template = 'login'
-  } else if (data.method === 'post') {
-    const response = await login(data)
-    template = response.template
-    payload = response.data
-  }
-  res.render(template, { data, payload })
 }
 
 handlers.logout = (data, req, res) => {

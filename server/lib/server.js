@@ -41,7 +41,6 @@ app.set('layout', './template')
 app.set('trust proxy', true)
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
-
 passport.use(
   new twitchStrategy(
     {
@@ -51,7 +50,6 @@ passport.use(
       scope: 'user_read'
     },
     (accessToken, refreshToken, profile, done) => {
-      console.log(profile)
       done(null, profile)
     }
   )
@@ -67,8 +65,8 @@ passport.deserializeUser((user, done) => {
 
 app.get('/auth/twitch', passport.authenticate('twitch'))
 
-app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/' }), (req, res) => {
-  res.redirect('/')
+app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/?auth=false' }), (req, res) => {
+  res.redirect('/?auth=true')
 })
 
 // server.x = (req, res) => {

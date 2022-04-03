@@ -1,0 +1,10 @@
+<% if (!data.session.passport?.user){ %>
+<ul class="account_buttons">
+  <a class="twitch_login" href="/auth/twitch"><i class="fa-brands fa-twitch"></i> Login with Twitch</a>
+</ul>
+<% } else { %>
+<ul class="account_buttons">
+  <a class="twitch_login" href="/settings"><i class="fa-solid fa-gear"></i></a>
+  <a class="twitch_login" href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</a>
+</ul>
+<% } %>
