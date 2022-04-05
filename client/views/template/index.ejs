@@ -29,7 +29,7 @@
       <% } %> <% if (data.session.passport?.user){ %>
       <div class="vertical_center"><%- body %></div>
       <% }%>
-      <div id="footer"><%- include('login_button'); %></div>
+      <div id="footer"><%- include('_login_button'); %></div>
     </div>
     <script>
       $(document).ready($ => {
@@ -40,5 +40,14 @@
         $('body').removeClass('preloader-site')
       })
     </script>
+    <!-- <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <script>
+      kofiWidgetOverlay.draw('jsupa', {
+        type: 'floating-chat',
+        'floating-chat.donateButton.text': 'Support Us',
+        'floating-chat.donateButton.background-color': '#323842',
+        'floating-chat.donateButton.text-color': '#fff'
+      })
+    </script> -->
   </body>
 </html>

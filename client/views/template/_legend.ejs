@@ -1,0 +1,13 @@
+<% if(locals.LEGEND_ROWS){ %>
+<div class="legend">
+  <ul>
+    <% locals.LEGEND_ROWS.forEach(row => { %>
+      <% Object.keys(row).forEach(input_key => { %>
+      <% const input_object = row[input_key]; %>
+        <li><b><%= input_key %> </b> <%= input_object %> </li>
+      <% }) %>
+    <% }) %>
+  </ul>
+</div>
+<button class="legend_button" onclick="toggleMoveToTop()">Legend</button>
+<% } %>
