@@ -4,8 +4,8 @@ const _data = {}
 
 _data.baseDir = './data/'
 
-_data.read = async (dir, file, callback) => {
-  await fs.readFile(`${_data.baseDir + dir}/${file}.json`, 'utf-8', (err, data) => {
+_data.read = (dir, file, callback) => {
+  fs.readFile(`${_data.baseDir + dir}/${file}.json`, 'utf-8', (err, data) => {
     if (!err && data) {
       const parsedData = JSON.parse(data)
       callback(false, parsedData)

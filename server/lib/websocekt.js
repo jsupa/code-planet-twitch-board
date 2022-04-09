@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
 const webSocket = require('ws')
 const ip = require('ip')
+const { Logger } = require('betterlogger.js')
 const config = require('./config')
 
 const server = {}
 
+const logger = new Logger('websocket').setDebugging(99)
 const wss = new webSocket.Server({ port: config.wsPort })
 
 wss.on('connection', (ws, req) => {
@@ -17,7 +18,7 @@ wss.on('connection', (ws, req) => {
 })
 
 server.init = () => {
-  console.log(`[WS SERVER] Running on http://${ip.address()}:${config.wsPort}`)
+  logger.debug(`Running on http://${ip.address()}:${config.wsPort}`)
 }
 
 module.exports = server

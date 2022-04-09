@@ -1,15 +1,30 @@
+const { Logger } = require('betterlogger.js')
+const _data = require('../lib/data')
+
+const logger = new Logger('discord_online_status').setDebugging(99)
+
+const controller = {}
+
 module.exports.index = async (data, req, res) => {
+  await controller.createDataFile(data)
   data.titleoverwrite = '🗣️ Discord Online Status'
   res.render('index', { data })
 }
 
 module.exports.settings = async (data, req, res) => {
+  await controller.createDataFile(data)
+  data.settings = await controller.readSettings(data)
   data.titleoverwrite = '🪛 Discord Embed Settings'
+
   const FORM_INPUTS = {
+    discord_webhook_url: {
+      type: 'link',
+      placeholder: 'Discord Webhook URL',
+      required: true
+    },
     message_content: {
       type: 'text',
       placeholder: 'Message Content',
-      extraClass: 'm_input',
       required: true,
       default: 'Hi @everyone'
     },
@@ -20,7 +35,7 @@ module.exports.settings = async (data, req, res) => {
       required: true,
       default: '{user_name} is now live on Twitch!'
     },
-    author_icon_url: { type: 'link', placeholder: 'Author Icon URL', required: true, default: '{user_avatar_url}' },
+    author_icon_url: { type: 'text', placeholder: 'Author Icon URL', required: true, default: '{user_avatar_url}' },
     title: { type: 'text', placeholder: 'Title', required: true, default: '{title}' },
     description: { type: 'text', placeholder: 'Description', required: true, default: 'Playing {game}' },
     link: { type: 'link', placeholder: 'Link', default: 'https://twitch.tv/{user_name}' },
@@ -43,6 +58,10 @@ module.exports.settings = async (data, req, res) => {
     }
   }
   const FORM_ROWS = [
+    { header: 'Discord Webhook Url' },
+    { discord_webhook_url: FORM_INPUTS.discord_webhook_url },
+    { space: true },
+    { header: 'Discord Webhook Settings' },
     { message_content: FORM_INPUTS.message_content },
     { message_color: FORM_INPUTS.message_color },
     { author_name: FORM_INPUTS.author_name, author_icon_url: FORM_INPUTS.author_icon_url },
@@ -57,8 +76,49 @@ module.exports.settings = async (data, req, res) => {
     { '{game}': 'Twitch Game.' },
     { '{time}': 'Current Time.' }
   ]
+
   if (req.method === 'GET') res.render('settings', { data, FORM_ROWS, LEGEND_ROWS })
-  else if (req.method === 'POST') {
-    res.render('settings', { data, FORM_ROWS, LEGEND_ROWS })
-  }
+  else if (req.method === 'POST') controller.saveSettings(data, req, res)
+}
+
+// eslint-disable-next-line no-multi-assign
+module.exports.createDataFile = controller.createDataFile = async data => {
+  const fileData = {}
+  const fileName = data.session.passport.user.id
+  const direcotry = 'discord_online_status'
+  return new Promise(resolve => {
+    _data.create(direcotry, fileName, fileData, err => {
+      if (err) logger.error(`user id : ${fileName} > ${err}`)
+      resolve(true)
+    })
+  })
+}
+
+controller.readSettings = async data => {
+  const fileName = data.session.passport.user.id
+  const direcotry = 'discord_online_status'
+  return new Promise(resolve => {
+    _data.read(direcotry, fileName, (err, fileData) => {
+      if (err) logger.error(`user id : ${fileName} > ${err}`)
+      resolve(fileData)
+    })
+  })
+}
+
+controller.saveSettings = async (data, req, res) => {
+  const fileData = {}
+  const fileName = data.session.passport.user.id
+  const direcotry = 'discord_online_status'
+  const formData = req.body
+  const formKeys = Object.keys(formData)
+  formKeys.forEach(key => {
+    fileData[key] = formData[key]
+  })
+  return new Promise(resolve => {
+    _data.update(direcotry, fileName, fileData, err => {
+      if (err) logger.error(`user id : ${fileName} > ${err}`)
+      res.redirect('back')
+      resolve(true)
+    })
+  })
 }

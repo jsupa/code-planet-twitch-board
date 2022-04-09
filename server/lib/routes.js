@@ -9,8 +9,8 @@ routes[''] = handlers.index
 routes.notFound = handlers.notFound
 routes.logout = handlers.logout
 
-routes.init = async () => {
-  await fs.readdir('./server/controllers', (err, files) => {
+routes.init = () => {
+  fs.readdir('./server/controllers', (err, files) => {
     if (!err && files) {
       files.forEach(file => {
         const fileName = file.split('.')[0]

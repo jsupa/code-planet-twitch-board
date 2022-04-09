@@ -5,5 +5,7 @@
   <h2 class="m10h">👋 Welcome back <a href="https://twitch.tv/<%= userName %>" class="link"><%= userName %></a></h2>
   <% } else { %>
   <h2><%= data.titleoverwrite %></h2>
+  <% } %> <% if(data.alert){ %>
+  <li class="alert warn"><%= data.alert %></li>
   <% } %>
 </div>

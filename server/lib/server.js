@@ -1,14 +1,18 @@
-/* eslint-disable no-console */
+/* eslint-disable global-require */
+/* eslint-disable import/no-dynamic-require */
 const express = require('express')
 const bodyParser = require('body-parser')
 const ip = require('ip')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const expressLayouts = require('express-ejs-layouts')
+const fs = require('fs')
 const passport = require('passport')
+const { Logger } = require('betterlogger.js')
 // ! v buducnosti prejsť na mongo alebo redis
 const JsonStore = require('express-session-json')(session)
 
+const logger = new Logger('server').setDebugging(99)
 const twitchStrategy = require('./passport-twitch').Strategy
 
 const config = require('./config')
@@ -17,6 +21,7 @@ const routes = require('./routes')
 const app = express()
 
 const server = {}
+const user = {}
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -67,6 +72,7 @@ app.get('/auth/twitch', passport.authenticate('twitch'))
 
 app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/?auth=false' }), (req, res) => {
   res.redirect('/?auth=true')
+  user.init(req)
 })
 
 // server.x = (req, res) => {
@@ -86,8 +92,6 @@ app.all('*', (req, res) => {
   const trimmedPath = req.path.replace(/^\/+|\/+$/g, '')
   const method = req.method.toLowerCase()
 
-  const choseHandler = routes[trimmedPath] || routes.notFound
-
   const data = {
     trimmedPath,
     headers,
@@ -97,47 +101,31 @@ app.all('*', (req, res) => {
     session
   }
 
+  const choseRoute = routes[trimmedPath] || routes.notFound
+  const choseHandler = data.session.passport?.user ? choseRoute : routes['']
+
   choseHandler(data, req, res)
-  // console.log(res)
-  // choseHandler(data, (statusCode, payload, contentType) => {
-  //   contentType = typeof contentType === 'string' ? contentType : 'json'
-  //   statusCode = typeof statusCode === 'number' ? statusCode : 200
-
-  //   let payloadString = ''
-
-  //   switch (contentType) {
-  //     case 'json':
-  //       res.setHeader('Content-Type', 'application/json')
-  //       payload = typeof payload === 'object' ? payload : {}
-  //       payloadString = JSON.stringify(payload)
-  //       break
-  //     case 'ejs':
-  //       res.setHeader('Content-Type', 'text/html')
-  //       res.render(payload.template, { rawData: data, data: payload.data })
-  //       break
-  //     case 'css':
-  //       res.setHeader('Content-Type', 'text/css')
-  //       payloadString = payload
-  //       break
-  //     case 'woff':
-  //       res.setHeader('Content-Type', 'application/font-woff')
-  //       payloadString = payload
-  //       break
-  //     default:
-  //       res.setHeader('Content-Type', 'application/json')
-  //       payloadString = JSON.stringify({ error: 'Content-Type not supported' })
-  //   }
-
-  //   if (contentType !== 'ejs') res.writeHead(statusCode)
-  //   if (contentType !== 'ejs') res.end(payloadString)
-
-  //   console.log(`[${method.toUpperCase()}] /${trimmedPath} (${statusCode}) - `)
-  // })
+  const { login, email } = session.passport.user?._json.data[0] || { login: '', email: '' }
+  logger.request(
+    `${ip} / session views: ${session.views} - (${login}, ${email}) > [${method}] ${
+      res.statusCode
+    } - /${trimmedPath} - ${JSON.stringify(body)}`
+  )
 })
 
 server.init = () => {
   app.listen(config.port, () => {
-    console.log(`[WEB SERVER] Running on http://${ip.address()}:${config.port}`)
+    logger.debug(` Running on http://${ip.address()}:${config.port}`)
+  })
+}
+
+user.init = data => {
+  fs.readdir('./server/controllers', (err, files) => {
+    if (!err && files) {
+      files.forEach(file => {
+        require(`./../controllers/${file}`).createDataFile(data)
+      })
+    }
   })
 }
 

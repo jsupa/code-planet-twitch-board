@@ -60,13 +60,6 @@ a {
   left: -5px;
   transition: all 0.3s;
 }
-.alerts {
-  max-width: 1000px;
-  margin: 0 auto;
-  text-align: center;
-  position: relative;
-  top: 100px;
-}
 .link:hover::after {
   height: calc(100% + 8px);
 }
@@ -251,6 +244,15 @@ i {
 input[type='color' i] {
   height: 30px;
   padding: 5px 15px;
+}
+.copy{
+  cursor: pointer;
+}
+.copy i{
+  transition: all 0.3s;
+}
+.copy:hover i{
+  color: #b5b4f2;
 }
 input:disabled {
   cursor: not-allowed;
