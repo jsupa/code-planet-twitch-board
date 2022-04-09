@@ -6,13 +6,11 @@ const logger = new Logger('discord_online_status').setDebugging(99)
 const controller = {}
 
 module.exports.index = async (data, req, res) => {
-  await controller.createDataFile(data)
   data.titleoverwrite = '🗣️ Discord Online Status'
   res.render('index', { data })
 }
 
 module.exports.settings = async (data, req, res) => {
-  await controller.createDataFile(data)
   data.settings = await controller.readSettings(data)
   data.titleoverwrite = '🪛 Discord Embed Settings'
 
@@ -82,7 +80,7 @@ module.exports.settings = async (data, req, res) => {
 }
 
 // eslint-disable-next-line no-multi-assign
-module.exports.createDataFile = controller.createDataFile = async data => {
+module.exports.createDataFile = async data => {
   const fileData = {}
   const fileName = data.session.passport.user.id
   const direcotry = 'discord_online_status'
