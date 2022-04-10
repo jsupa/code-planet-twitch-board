@@ -7,5 +7,7 @@
   <h2><%= data.titleoverwrite %></h2>
   <% } %> <% if(data.alert){ %>
   <li class="alert warn"><%= data.alert %></li>
+  <% } %> <% if (data.controller?.status){ %>
+  <li class="alert <%= data.controller?.status.toLowerCase() %>">Status of module : <%= data.controller?.status %></li>
   <% } %>
 </div>
