@@ -26,12 +26,13 @@ body {
 }
 #header {
   /* background-color: blue; */
+  /* border-bottom: 1px solid #c8d0d8; */
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   height: 100%;
-  padding: 15px 0;
+  padding-top: 15px;
 }
 #footer {
   /* background-color: orange; */
@@ -39,7 +40,10 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
-  padding: 15px 0;
+  padding-bottom: 15px;
+}
+.account_buttons{
+  margin: 15px 0;
 }
 a {
   cursor: pointer;
@@ -191,7 +195,7 @@ form {
   border-radius: 5px;
   margin: 5px 0;
   width: 100%;
-  max-width: 400px;
+  max-width: 600px;
 }
 .input_link_css {
   color: #b5b4f2;

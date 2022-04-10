@@ -14,14 +14,14 @@ const controller = {}
 module.exports.index = async (data, req, res) => {
   data.titleoverwrite = '🗣️ Discord Online Status'
   data.controller.status = await api.getStatus(data, TWITCH_SETTINGS)
-  res.render('controller', { data })
-}
-
-module.exports.settings = async (data, req, res) => {
   data.settings = await controller.readSettings(data)
-  data.titleoverwrite = '🪛 Discord Embed Settings'
 
   const FORM_INPUTS = {
+    toggle_controller: {
+      type: 'toggle',
+      label: 'Toggle Controller',
+      value: data.controller.status === 'Online'
+    },
     discord_webhook_url: {
       type: 'link',
       placeholder: 'Discord Webhook URL',
@@ -62,7 +62,13 @@ module.exports.settings = async (data, req, res) => {
       default: 'https://code-planet.eu/images/Logo.png'
     }
   }
+
   const FORM_ROWS = [
+    { header: 'Description' },
+    { text: 'So you went live and you want everyone to know.' },
+    { text: "Here's how you do it:" },
+    { toggle_controller: FORM_INPUTS.toggle_controller },
+    { space: true },
     { header: 'Discord Webhook Url' },
     { discord_webhook_url: FORM_INPUTS.discord_webhook_url },
     { space: true },
@@ -74,6 +80,7 @@ module.exports.settings = async (data, req, res) => {
     { thumbnail_url: FORM_INPUTS.thumbnail_url },
     { footer_text: FORM_INPUTS.footer_text, footer_icon_url: FORM_INPUTS.footer_icon_url }
   ]
+
   const LEGEND_ROWS = [
     { '{user_name}': 'Twitch Username.' },
     { '{user_avatar_url}': 'Twitch Avatar URL.' },
@@ -82,7 +89,7 @@ module.exports.settings = async (data, req, res) => {
     { '{time}': 'Current Time.' }
   ]
 
-  if (req.method === 'GET') res.render('settings', { data, FORM_ROWS, LEGEND_ROWS })
+  if (req.method === 'GET') res.render('controller', { data, FORM_ROWS, LEGEND_ROWS })
   else if (req.method === 'POST') controller.saveSettings(data, req, res)
 }
 

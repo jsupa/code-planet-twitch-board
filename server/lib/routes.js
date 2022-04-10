@@ -15,7 +15,6 @@ routes.init = () => {
       files.forEach(file => {
         const fileName = file.split('.')[0]
         routes[fileName] = require(`./../controllers/${file}`).index
-        routes[`settings/${fileName}`] = require(`./../controllers/${file}`).settings
       })
     }
   })

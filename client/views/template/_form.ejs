@@ -3,8 +3,8 @@
     <% FORM_ROWS.forEach(row => { %>
     <div class="form_object">
       <% Object.keys(row).forEach(input_key => { %>
-      <% const input_object = row[input_key]; %>
-      <% const key_data = data.settings[input_key]; %>
+      <% const input_object = row[input_key] %>
+      <% const key_data = data.settings ? data.settings[input_key] : false %>
       <% if (input_object.type === 'text') { %>
         <input 
           type="text"
@@ -36,7 +36,9 @@
         <% } else if(input_key === 'space'){ %>
           <br />
         <% } else if(input_key === 'header'){ %>
-          <h3 onclick="copy(window.location.origin + window.location.pathname+'#<%= input_object%>')" class="copy" id="<%= input_object %>"><i class="fa-solid fa-link"></i> <%= input_object %></h3>
+          <h3 onclick="copy(window.location.origin + window.location.pathname+'#<%= input_object %>')" class="copy" id="<%= input_object %>"><i class="fa-solid fa-link"></i> <%= input_object %></h3>
+        <% } else if(input_key === 'text'){ %>
+          <p><%- input_object %></p>
         <% } %>
       <% }) %>
     </div>
