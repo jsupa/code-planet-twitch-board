@@ -94,18 +94,20 @@ app.all('*', (req, res) => {
     body,
     query,
     method,
-    session
+    session,
+    controller: {}
   }
 
   const choseRoute = routes[trimmedPath] || routes.notFound
   const choseHandler = data.session.passport?.user ? choseRoute : routes['']
 
   choseHandler(data, req, res)
-  const { login, email } = session.passport.user?._json.data[0] || { login: '', email: '' }
+  const { login, email } = session.passport?.user._json.data[0] || { login: '', email: '' }
+  const allowInfo = true
   logger.request(
-    `${ip} / session views: ${session.views} - (${login}, ${email}) > [${method}] ${
-      res.statusCode
-    } - /${trimmedPath} - ${JSON.stringify(body)}`
+    `${allowInfo ? ip : '[FILTERED]'} / session views: ${session.views} - (${login}, ${
+      allowInfo ? email : '[FILTERED]'
+    }) > [${method}] ${res.statusCode} - /${trimmedPath} - ${JSON.stringify(body)}`
   )
 })
 

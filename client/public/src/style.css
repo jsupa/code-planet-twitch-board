@@ -130,6 +130,14 @@ p {
   list-style: '💬 ';
   color: #b5b4f2;
 }
+.offline {
+  list-style: '🔴 ';
+  color: #f29595;
+}
+.online {
+  list-style: '🟢 ';
+  color: #ADDD90;
+}
 
 .alert {
   background-color: #222830;

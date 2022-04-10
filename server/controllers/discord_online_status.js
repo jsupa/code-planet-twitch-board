@@ -1,5 +1,11 @@
 const { Logger } = require('betterlogger.js')
 const _data = require('../lib/data')
+const api = require('../api/discord_online_status')
+
+const TWITCH_SETTINGS = {
+  scope: false,
+  subscription: 'stream.online'
+}
 
 const logger = new Logger('discord_online_status').setDebugging(99)
 
@@ -7,7 +13,8 @@ const controller = {}
 
 module.exports.index = async (data, req, res) => {
   data.titleoverwrite = '🗣️ Discord Online Status'
-  res.render('index', { data })
+  data.controller.status = await api.getStatus(data, TWITCH_SETTINGS)
+  res.render('controller', { data })
 }
 
 module.exports.settings = async (data, req, res) => {
@@ -114,7 +121,7 @@ controller.saveSettings = async (data, req, res) => {
   })
   return new Promise(resolve => {
     _data.update(direcotry, fileName, fileData, err => {
-      if (err) logger.error(`user id : ${fileName} > ${err}`)
+      if (err) logger.error(`(saveSettings) user id : ${fileName} > ${err}`)
       res.redirect('back')
       resolve(true)
     })
