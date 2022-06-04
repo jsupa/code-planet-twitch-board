@@ -1,4 +1,5 @@
 const fs = require('fs')
+const helpers = require('./helpers')
 
 const handlers = {}
 
@@ -24,11 +25,9 @@ handlers.logout = (data, req, res) => {
 }
 
 handlers.webhook = (data, req, res) => {
-  // console.log(req.headers)
-  // console.log(req.body)
-  if (req.header('twitch-eventsub-message-type') === 'webhook_callback_verification') res.send(req.body.challenge)
+  if (!helpers.verifySignature(req)) handlers.notFound(data, req, res)
+  else if (req.header('twitch-eventsub-message-type') === 'webhook_callback_verification') res.send(req.body.challenge)
   else if (req.header('twitch-eventsub-message-type') === 'notification') res.send('')
-  else handlers.notFound(data, req, res)
 }
 
 module.exports = handlers

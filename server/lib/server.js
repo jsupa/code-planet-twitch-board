@@ -24,7 +24,13 @@ const app = express()
 const server = {}
 const user = {}
 
-app.use(bodyParser.json())
+app.use(
+  bodyParser.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf
+    }
+  })
+)
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(cookieParser('QPyae3xxxxxxxxxxxxxxxxMcdK'))
