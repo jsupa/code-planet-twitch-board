@@ -1,25 +1,22 @@
 const crypto = require('crypto')
-const fs = require('fs')
 
 const config = require('./config')
 const _data = require('./data')
 
 const helpers = {}
 
-helpers.getStaticAsset = (fileName, callback) => {
-  fileName = typeof fileName === 'string' && fileName.length > 0 ? fileName : false
-  if (fileName) {
-    const publicDir = './client/public/'
-    fs.readFile(publicDir + fileName, (err, data) => {
-      if (!err && data) {
-        callback(false, data)
-      } else {
-        callback('No file could be found')
-      }
-    })
-  } else {
-    callback('A valid file name was not specified')
-  }
+helpers.verifySignature = req => {
+  const messageID = req.header('twitch-eventsub-message-id')
+  const messageTimeStamp = req.header('twitch-eventsub-message-timestamp')
+  const headerSignature = req.header('twitch-eventsub-message-signature')
+  const { rawBody } = req
+
+  if (!messageID && !messageTimeStamp && !headerSignature && !rawBody) return false
+
+  const message = messageID + messageTimeStamp + rawBody
+
+  const signature = crypto.createHmac('sha256', 'B0HA_KURV4_P1C1_B0H4').update(message).digest('hex')
+  return crypto.timingSafeEqual(Buffer.from(`sha256=${signature}`), Buffer.from(headerSignature))
 }
 
 helpers.hash = str => {
