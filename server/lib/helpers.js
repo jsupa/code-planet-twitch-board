@@ -15,7 +15,7 @@ helpers.verifySignature = req => {
 
   const message = messageID + messageTimeStamp + rawBody
 
-  const signature = crypto.createHmac('sha256', 'B0HA_KURV4_P1C1_B0H4').update(message).digest('hex')
+  const signature = crypto.createHmac('sha256', config.twitch.webhookSecret).update(message).digest('hex')
   return crypto.timingSafeEqual(Buffer.from(`sha256=${signature}`), Buffer.from(headerSignature))
 }
 

@@ -56,7 +56,7 @@ eventSub.createSubscription = async (user, subscriptionType) =>
       transport: {
         method: 'webhook',
         callback: `https://twitch-demo.code-planet.eu/api/webhook`,
-        secret: 'B0HA_KURV4_P1C1_B0H4'
+        secret: config.twitch.webhookSecret
       }
     }
     request({ ...params, body: JSON.stringify(body) }, (err, res, body) => {
