@@ -38,7 +38,9 @@
         <% } else if(input_key === 'header'){ %>
           <h3 onclick="copy(window.location.origin + window.location.pathname+'#<%= input_object %>')" class="copy" id="<%= input_object %>"><i class="fa-solid fa-link"></i> <%= input_object %></h3>
         <% } else if(input_key === 'text'){ %>
-          <p><%- input_object %></p>
+          <p><%= input_object %></p>
+        <% } else if(input_key === 'html_safe'){ %>
+          <%- input_object %>
         <% } %>
       <% }) %>
     </div>

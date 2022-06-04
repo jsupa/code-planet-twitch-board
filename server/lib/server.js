@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 const express = require('express')
+const request = require('request')
 const bodyParser = require('body-parser')
 const ip = require('ip')
 const cookieParser = require('cookie-parser')
@@ -8,12 +9,12 @@ const session = require('express-session')
 const expressLayouts = require('express-ejs-layouts')
 const fs = require('fs')
 const passport = require('passport')
+const { OAuth2Strategy } = require('passport-oauth')
 const { Logger } = require('betterlogger.js')
 // ! v buducnosti prejsť na mongo alebo redis
 const JsonStore = require('express-session-json')(session)
 
 const logger = new Logger('server').setDebugging(99)
-const twitchStrategy = require('./passport-twitch').Strategy
 
 const config = require('./config')
 const routes = require('./routes')
@@ -41,20 +42,49 @@ app.use(
 
 app.use(express.static('./client/public'))
 app.use(expressLayouts)
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.set('layout', './template')
 app.set('trust proxy', true)
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
+
+OAuth2Strategy.prototype.userProfile = function (accessToken, done) {
+  const options = {
+    url: 'https://api.twitch.tv/helix/users',
+    method: 'GET',
+    headers: {
+      'Client-ID': config.twitch.clientID,
+      Accept: 'application/vnd.twitchtv.v5+json',
+      Authorization: `Bearer ${accessToken}`
+    }
+  }
+
+  request(options, (error, response, body) => {
+    if (response && response.statusCode === 200) {
+      done(null, JSON.parse(body))
+    } else {
+      done(JSON.parse(body))
+    }
+  })
+}
+
 passport.use(
-  new twitchStrategy(
+  'twitch',
+  new OAuth2Strategy(
     {
+      authorizationURL: 'https://id.twitch.tv/oauth2/authorize',
+      tokenURL: 'https://id.twitch.tv/oauth2/token',
       clientID: config.twitch.clientID,
       clientSecret: config.twitch.clientSecret,
       callbackURL: config.twitch.callbackURL,
-      scope: 'user_read'
+      state: true
     },
     (accessToken, refreshToken, profile, done) => {
+      profile.accessToken = accessToken
+      profile.refreshToken = refreshToken
+
       done(null, profile)
     }
   )
@@ -68,12 +98,15 @@ passport.deserializeUser((user, done) => {
   done(null, user)
 })
 
-app.get('/auth/twitch', passport.authenticate('twitch'))
+app.get('/auth/twitch', passport.authenticate('twitch', { scope: 'user_read' }))
 
-app.get('/auth/twitch/callback', passport.authenticate('twitch', { failureRedirect: '/?auth=false' }), (req, res) => {
-  res.redirect('/?auth=true')
-  user.init(req)
-})
+app.get(
+  '/auth/twitch/callback',
+  passport.authenticate('twitch', { failureRedirect: '/?auth=false', successRedirect: '/' }),
+  req => {
+    user.init(req)
+  }
+)
 
 routes.init()
 
@@ -99,10 +132,11 @@ app.all('*', (req, res) => {
   }
 
   const choseRoute = routes[trimmedPath] || routes.notFound
-  const choseHandler = data.session.passport?.user ? choseRoute : routes['']
+  let choseHandler = data.session.passport?.user.data[0] ? choseRoute : routes['']
+  choseHandler = trimmedPath === 'api/webhook' ? routes['api/webhook'] : choseRoute
 
   choseHandler(data, req, res)
-  const { login, email } = session.passport?.user._json.data[0] || { login: '', email: '' }
+  const { login, email } = session.passport?.user.data[0] || { login: '', email: '' }
   const allowInfo = true
   logger.request(
     `${allowInfo ? ip : '[FILTERED]'} / session views: ${session.views} - (${login}, ${

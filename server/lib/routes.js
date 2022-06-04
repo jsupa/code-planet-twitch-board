@@ -8,6 +8,7 @@ const routes = {}
 routes[''] = handlers.index
 routes.notFound = handlers.notFound
 routes.logout = handlers.logout
+routes['api/webhook'] = handlers.webhook
 
 routes.init = () => {
   fs.readdir('./server/controllers', (err, files) => {
@@ -15,6 +16,7 @@ routes.init = () => {
       files.forEach(file => {
         const fileName = file.split('.')[0]
         routes[fileName] = require(`./../controllers/${file}`).index
+        routes[`${fileName}/enable`] = require(`./../controllers/${file}`).enable
       })
     }
   })

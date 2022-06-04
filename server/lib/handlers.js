@@ -16,11 +16,19 @@ handlers.index = async (data, req, res) => {
 handlers.logout = (data, req, res) => {
   req.session.destroy(err => {
     if (err) {
-      console.log(err)
+      // console.log(err)
     } else {
       res.redirect('/')
     }
   })
+}
+
+handlers.webhook = (data, req, res) => {
+  // console.log(req.headers)
+  // console.log(req.body)
+  if (req.header('twitch-eventsub-message-type') === 'webhook_callback_verification') res.send(req.body.challenge)
+  else if (req.header('twitch-eventsub-message-type') === 'notification') res.send('')
+  else handlers.notFound(data, req, res)
 }
 
 module.exports = handlers

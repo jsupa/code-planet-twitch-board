@@ -3,12 +3,18 @@ const eventSub = require('../lib/twitch-event-sub')
 const api = {}
 
 api.getStatus = async (data, settings) => {
-  const userId = data.session.passport?.user.id
+  const user = data.session.passport?.user
   const { subscriptionType } = settings
 
-  const subscription = await eventSub.getSubscription(userId, subscriptionType)
+  const subscription = await eventSub.getSubscription(user, subscriptionType)
+  return subscription.status === 'enabled' ? ['Online', subscription.id] : ['Offline', null]
+}
 
-  return subscription ? 'Online' : 'Offline'
+api.createSubscription = async (data, settings) => {
+  const user = data.session.passport?.user
+  const { subscriptionType } = settings
+  await eventSub.createSubscription(user, subscriptionType)
+  return true
 }
 
 module.exports = api

@@ -24,7 +24,7 @@
     </div>
 
     <div id="main">
-      <% if (data.session.passport?.user){ %>
+      <% if (data.session.passport?.user.data[0]){ %>
       <div id="header"><%- include('_header') %></div>
       <div class="vertical_center"><%- body %></div>
       <% }%>

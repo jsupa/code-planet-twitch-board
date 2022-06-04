@@ -1,13 +1,13 @@
-<% const userName = data.session.passport?.user.userName %>
+<% const userName = data.session.passport?.user.data[0].display_name %>
 <div class="header">
   <% if (!data.titleoverwrite){ %>
-  <img class="w50px rounded center m10h" src="<%= data.session.passport?.user.profileImageUrl  %> " />
+  <img class="w50px rounded center m10h" src="<%= data.session.passport?.user.data[0].profile_image_url  %> " />
   <h2 class="m10h">👋 Welcome back <a href="https://twitch.tv/<%= userName %>" class="link"><%= userName %></a></h2>
   <% } else { %>
   <h2><%= data.titleoverwrite %></h2>
   <% } %> <% if(data.alert){ %>
   <li class="alert warn"><%= data.alert %></li>
   <% } %> <% if (data.controller?.status){ %>
-  <li class="alert <%= data.controller?.status.toLowerCase() %>">Status of module : <%= data.controller?.status %></li>
+  <li class="alert <%= data.controller?.status[0].toLowerCase() %>" title="<%= data.controller?.status[1] %>">Status of module : <%= data.controller?.status[0] %></li>
   <% } %>
 </div>
