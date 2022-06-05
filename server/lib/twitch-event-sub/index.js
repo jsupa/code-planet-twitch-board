@@ -10,7 +10,7 @@ eventSub.getSubscription = async (user, subscriptionType) =>
   new Promise(resolve => {
     request(
       {
-        url: `https://api.twitch.tv/helix/eventsub/subscriptions?user_id=${user.data[0].id}`,
+        url: `https://api.twitch.tv/helix/eventsub/subscriptions?type=${subscriptionType}`,
         headers: {
           'Client-ID': config.twitch.clientID,
           Authorization: `Bearer ${config.twitch.bearer}`
@@ -29,7 +29,7 @@ eventSub.getSubscription = async (user, subscriptionType) =>
           )
 
           if (subscriptions === undefined) resolve(null)
-          const subscription = subscriptions?.find(sub => sub.type === subscriptionType)
+          const subscription = subscriptions?.find(sub => sub.condition.broadcaster_user_id === user.data[0].id)
           resolve(subscription)
         }
       }
@@ -69,8 +69,30 @@ eventSub.createSubscription = async (user, subscriptionType) =>
             JSON.parse(body).max_total_cost
           } | Ratelimit Rremaining : ${res.headers['ratelimit-remaining']}`
         )
-        console.log(JSON.parse(body))
         resolve(JSON.parse(body))
+      }
+    })
+  })
+
+eventSub.deleteSubscription = async (user, subscriptionId) =>
+  new Promise(resolve => {
+    const params = {
+      url: `https://api.twitch.tv/helix/eventsub/subscriptions?id=${subscriptionId}`,
+      method: 'DELETE',
+      headers: {
+        'Client-ID': config.twitch.clientID,
+        Authorization: `Bearer ${config.twitch.bearer}`
+      }
+    }
+    request(params, (err, res) => {
+      if (err) {
+        logger.error(err)
+        resolve(null)
+      } else {
+        logger.info(
+          `${res.statusCode} ${res.statusMessage} | Ratelimit Rremaining : ${res.headers['ratelimit-remaining']}`
+        )
+        resolve(res.statusCode === 204)
       }
     })
   })

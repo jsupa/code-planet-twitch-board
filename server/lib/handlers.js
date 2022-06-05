@@ -28,6 +28,7 @@ handlers.webhook = (data, req, res) => {
   if (!helpers.verifySignature(req)) handlers.notFound(data, req, res)
   else if (req.header('twitch-eventsub-message-type') === 'webhook_callback_verification') res.send(req.body.challenge)
   else if (req.header('twitch-eventsub-message-type') === 'notification') res.send('')
+  else handlers.notFound(data, req, res)
 }
 
 module.exports = handlers
