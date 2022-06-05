@@ -10,10 +10,7 @@ const TWITCH_SETTINGS = {
 const logger = new Logger('discord_online_status').setDebugging(99)
 
 const controller = {}
-module.exports.enable = async (data, req, res) => {
-  await api.createSubscription(data, TWITCH_SETTINGS)
-  res.redirect('/discord_online_status')
-}
+
 module.exports.index = async (data, req, res) => {
   data.titleoverwrite = '🗣️ Discord Online Status'
   data.controller.status = await api.getStatus(data, TWITCH_SETTINGS)
@@ -23,7 +20,7 @@ module.exports.index = async (data, req, res) => {
     toggle_controller: {
       type: 'toggle',
       label: 'Toggle Controller',
-      value: data.controller.status[0] === 'enabled'
+      value: data.controller.status[0] === 'Online'
     },
     discord_webhook_url: {
       type: 'link',
@@ -43,7 +40,12 @@ module.exports.index = async (data, req, res) => {
       required: true,
       default: '{user_name} is now live on Twitch!'
     },
-    author_icon_url: { type: 'text', placeholder: 'Author Icon URL', required: false, default: '{user_avatar_url}' },
+    author_icon_url: {
+      type: 'text',
+      placeholder: 'Author Icon URL',
+      default: '{user_avatar_url}',
+      extraClass: 'input_link_css'
+    },
     title: { type: 'text', placeholder: 'Title', required: true, default: '{title}' },
     description: { type: 'text', placeholder: 'Description', required: true, default: 'Playing {game}' },
     link: { type: 'link', placeholder: 'Link', default: 'https://twitch.tv/{user_name}' },
@@ -67,11 +69,12 @@ module.exports.index = async (data, req, res) => {
   }
 
   const FORM_ROWS = [
+    { toggle_controller: FORM_INPUTS.toggle_controller },
+    { space: true },
     { header: 'Description' },
     { text: 'So you went live and you want everyone to know.' },
     { text: "Here's how you do it:" },
     { html_safe: "<a href='#'>Watch Tutorial</a>" },
-    { toggle_controller: FORM_INPUTS.toggle_controller },
     { space: true },
     { header: 'Discord Webhook Url' },
     { discord_webhook_url: FORM_INPUTS.discord_webhook_url },
@@ -127,9 +130,16 @@ controller.saveSettings = async (data, req, res) => {
   const direcotry = 'discord_online_status'
   const formData = req.body
   const formKeys = Object.keys(formData)
+
+  if (formData.toggle_controller && formData.id === '') {
+    await api.createSubscription(data, TWITCH_SETTINGS)
+  }
+  if (!formData.toggle_controller && formData.id !== '') await api.removeSubscription(data, formData.id)
+
   formKeys.forEach(key => {
     fileData[key] = formData[key]
   })
+
   return new Promise(resolve => {
     _data.update(direcotry, fileName, fileData, err => {
       if (err) logger.error(`(saveSettings) user id : ${fileName} > ${err}`)

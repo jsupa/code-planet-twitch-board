@@ -1,7 +1,9 @@
 <div id="column" class="owelflow_hidden"><%- include('./template/_form') %> <%- include('./template/_legend') %></div>
 <script>
+
   const FORM = $('form')
   const LEGEND = $('.legend')
+
   function toggleMoveToTop() {
     if (FORM[0].style.top == '-1000px') {
       FORM[0].style.top = '0px'
@@ -10,11 +12,5 @@
       LEGEND[0].style.top = '0px'
       FORM[0].style.top = '-1000px'
     }
-  }
-  function shakethis() {
-    FORM.addClass('shake')
-    setTimeout(function () {
-      FORM.removeClass('shake')
-    }, 500)
   }
 </script>

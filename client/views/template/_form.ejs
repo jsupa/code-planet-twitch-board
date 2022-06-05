@@ -33,6 +33,22 @@
           class="input_link_css <%= input_object?.extraClass %>"
           oninvalid="shakethis()"
         />
+        <% } else if (input_object.type === 'toggle'){ %>
+          <h3 onclick="copy(window.location.origin + window.location.pathname+'#<%= input_object?.label %>')" class="copy" id="<%= input_object?.label %>"><i class="fa-solid fa-link"></i> <%= input_object?.label %></h3>
+            <div class="button-cover">
+              <div class="button r" id="button-3">
+                <input type="checkbox"
+                class="checkbox"
+                name="<%= input_key %>"
+                <%= input_object?.value && 'checked' %>
+                <%= input_object?.disabled && 'disabled' %>
+                <%= input_object?.required && 'required' %>
+                />
+                <div class="knobs"></div>
+                <div class="layer"></div>
+              </div>
+            </div>
+            <input type="text" value="<%= data.controller?.status[1] %>" hidden name="id">
         <% } else if(input_key === 'space'){ %>
           <br />
         <% } else if(input_key === 'header'){ %>
@@ -59,5 +75,12 @@
       document.body.removeChild(input);
       return result;
     }
+
+    function shakethis() {
+      FORM.addClass('shake')
+      setTimeout(function () {
+        FORM.removeClass('shake')
+      }, 500)
+    } 
   </script>
 <% } %>

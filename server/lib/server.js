@@ -143,7 +143,7 @@ app.all('*', (req, res) => {
 
   choseHandler(data, req, res)
   const { login, email } = session.passport?.user.data[0] || { login: '', email: '' }
-  const allowInfo = true
+  const allowInfo = false
   logger.request(
     `${allowInfo ? ip : '[FILTERED]'} / session views: ${session.views} - (${login}, ${
       allowInfo ? email : '[FILTERED]'
