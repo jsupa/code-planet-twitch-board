@@ -1,5 +1,6 @@
 const { Logger } = require('betterlogger.js')
 const _data = require('../lib/data')
+const discord = require('../lib/discord')
 const api = require('../api/discord_online_status')
 
 const TWITCH_SETTINGS = {
@@ -15,6 +16,8 @@ module.exports.index = async (data, req, res) => {
   data.titleoverwrite = '🗣️ Discord Online Status'
   data.controller.status = await api.getStatus(data, TWITCH_SETTINGS)
   data.settings = await controller.readSettings(data)
+
+  await discord.checkDiscordWebhook(data)
 
   const FORM_INPUTS = {
     toggle_controller: {
