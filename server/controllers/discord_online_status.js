@@ -77,7 +77,7 @@ module.exports.index = async (data, req, res) => {
     { header: 'Description' },
     { text: 'So you went live and you want everyone to know.' },
     { text: "Here's how you do it:" },
-    { html_safe: "<a href='#'>Watch Tutorial</a>" },
+    // { html_safe: "<a href='#' class='link'>Watch Tutorial</a>" },
     { space: true },
     { header: 'Discord Webhook Url' },
     { discord_webhook_url: FORM_INPUTS.discord_webhook_url },

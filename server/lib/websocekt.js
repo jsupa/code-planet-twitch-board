@@ -10,15 +10,19 @@ const wss = new webSocket.Server({ port: config.wsPort })
 
 wss.on('connection', (ws, req) => {
   const auth = req.headers.authtoken === 'someoken'
-
+  // console.log(req)
   if (!auth) ws.close()
 
   const message = { status: 'success', message: 'hello' }
   ws.send(JSON.stringify(message))
+
+  ws.on('message', message => {
+    console.log(message.toString())
+  })
 })
 
 server.init = () => {
-  logger.debug(`Running on http://${ip.address()}:${config.wsPort}`)
+  logger.debug(`Running on ws://${ip.address()}:${config.wsPort}`)
 }
 
 module.exports = server
