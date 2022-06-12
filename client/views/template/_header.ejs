@@ -7,6 +7,7 @@
   <h2><%= data.titleoverwrite %></h2>
   <% } %> <% if(data.alert){ %>
   <li class="alert warn"><%= data.alert %></li>
+  <script>$(window).on('load', () => {shakethis()})</script>
   <% } %> <% if (data.controller?.status){ %>
   <li class="alert <%= data.controller?.status[0].toLowerCase() %>" title="<%= data.controller?.status[1] %>">Status of module : <%= data.controller?.status[0] %></li>
   <% } %>
