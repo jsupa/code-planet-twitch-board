@@ -45,6 +45,9 @@ _data.update = (dir, file, data, callback) => {
 }
 
 _data.create = (dir, file, data, callback) => {
+  if (!fs.existsSync(_data.baseDir + dir)) {
+    fs.mkdirSync(_data.baseDir + dir)
+  }
   fs.open(`${_data.baseDir + dir}/${file}.json`, 'wx', (err, fileDescriptor) => {
     if (!err && fileDescriptor) {
       const stringData = JSON.stringify(data)

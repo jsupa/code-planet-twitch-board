@@ -9,17 +9,26 @@ const logger = new Logger('websocket').setDebugging(99)
 const wss = new webSocket.Server({ port: config.wsPort })
 
 wss.on('connection', (ws, req) => {
-  const auth = req.headers.authtoken === 'someoken'
-  // console.log(req)
-  if (!auth) ws.close()
+  const controller = req.url.split('/')[2].split('/')[0]
 
-  const message = { status: 'success', message: 'hello' }
-  ws.send(JSON.stringify(message))
+  // eslint-disable-next-line import/no-dynamic-require, global-require
+  require(`./../controllers/${controller}`).ws(ws, req)
 
-  ws.on('message', message => {
-    console.log(message.toString())
-  })
+  // const message = { status: 'success', message: 'hello' }
+  // ws.send(JSON.stringify(message))
+
+  // ws.on('message', message => {
+  //   console.log(message.toString())
+  // })
 })
+
+server.sendMessage = (watchToken, heartRate) => {
+  wss.clients.forEach(client => {
+    if (client.watchToken === watchToken) {
+      client.send(JSON.stringify({ heartRate }))
+    }
+  })
+}
 
 server.init = () => {
   logger.debug(`Running on ws://${ip.address()}:${config.wsPort}`)

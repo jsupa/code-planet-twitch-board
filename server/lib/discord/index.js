@@ -7,24 +7,30 @@ const { MessageEmbed, WebhookClient } = require('discord.js')
 const logger = new Logger('discord').setDebugging(99)
 const discord = {}
 
-discord.checkDiscordWebhook = async data =>
+discord.checkDiscordWebhook = async req =>
   new Promise(resolve => {
     request(
       {
-        url: data.settings.discord_webhook_url
+        url: req.Data()?.settings.discord_webhook_url
       },
       (err, res, body) => {
         if (err) {
           logger.error(err)
           resolve(null)
         } else if (res.headers['content-type'] !== 'application/json') {
-          logger.error(`${res.statusCode} ${res.statusMessage} - INVALID CONTENT TYPE : ${res.headers['content-type']}`)
-          data.alert = 'Invalid Discord Webhook URL'
+          logger.error(
+            `(GET ${req.User().id}) ${res.statusCode} ${res.statusMessage} - INVALID CONTENT TYPE : ${
+              res.headers['content-type']
+            }`
+          )
+          req.local.data.alert = 'Invalid Discord Webhook URL'
           resolve(null)
         } else {
-          logger.info(`${res.statusCode} ${res.statusMessage} - ${body}`)
           const parsedBody = JSON.parse(body)
-          if (!parsedBody.id) data.alert = parsedBody.message || 'Invalid Discord Webhook URL'
+          logger.info(
+            `(GET ${req.User().id}) ${res.statusCode} ${res.statusMessage} - ${parsedBody.message || parsedBody.id}`
+          )
+          if (!parsedBody.id) req.local.data.alert = parsedBody.message || 'Invalid Discord Webhook URL'
           resolve(true)
         }
       }

@@ -23,13 +23,13 @@ eventSub.getSubscription = async (user, subscriptionType) =>
         } else {
           const subscriptions = JSON.parse(body).data
           logger.info(
-            `${res.statusCode} ${res.statusMessage} - COST : ${JSON.parse(body).total_cost}/${
+            `(GET ${user.id}) ${res.statusCode} ${res.statusMessage} - COST : ${JSON.parse(body).total_cost}/${
               JSON.parse(body).max_total_cost
             } | Ratelimit Rremaining : ${res.headers['ratelimit-remaining']}`
           )
 
           if (subscriptions === undefined) resolve(null)
-          const subscription = subscriptions?.find(sub => sub.condition.broadcaster_user_id === user.data[0].id)
+          const subscription = subscriptions?.find(sub => sub.condition.broadcaster_user_id === user.id)
           resolve(subscription)
         }
       }
@@ -51,7 +51,7 @@ eventSub.createSubscription = async (user, subscriptionType) =>
       type: subscriptionType,
       version: '1',
       condition: {
-        broadcaster_user_id: user.data[0].id
+        broadcaster_user_id: user.id
       },
       transport: {
         method: 'webhook',
@@ -65,7 +65,7 @@ eventSub.createSubscription = async (user, subscriptionType) =>
         resolve(null)
       } else {
         logger.info(
-          `${res.statusCode} ${res.statusMessage} - COST : ${JSON.parse(body).total_cost}/${
+          `(CREATE ${user.id}) ${res.statusCode} ${res.statusMessage} - COST : ${JSON.parse(body).total_cost}/${
             JSON.parse(body).max_total_cost
           } | Ratelimit Rremaining : ${res.headers['ratelimit-remaining']}`
         )
@@ -90,7 +90,7 @@ eventSub.deleteSubscription = async (user, subscriptionId) =>
         resolve(null)
       } else {
         logger.info(
-          `${res.statusCode} ${res.statusMessage} | Ratelimit Rremaining : ${res.headers['ratelimit-remaining']}`
+          `(DELETE ${user.id}) ${res.statusCode} ${res.statusMessage} | Ratelimit Rremaining : ${res.headers['ratelimit-remaining']}`
         )
         resolve(res.statusCode === 204)
       }

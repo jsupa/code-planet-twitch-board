@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <meta http-equiv="refresh" content="600" />
+  </head>
+  <style>
+    div {
+      font-size: 40px;
+      font-family: 'Roboto', sans-serif;
+      font-weight: bold;
+      color: #000;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      align-content: center;
+      flex-direction: column;
+    }
+    h1 {
+      padding: 10px 20px;
+      margin: 10px;
+    }
+  </style>
+  <body>
+    <div>
+      <h1>--.-</h1>
+      <p></p>
+    </div>
+  </body>
+
+  <script>
+    let url =
+      'wss://twitch-demo.code-planet.eu/ws/heart_rate/?userid=<%= req.params.userid  %>&token=<%= req.params.token %>'
+    let ws = new WebSocket(url)
+
+    ws.onopen = event => {
+      console.log('connected')
+    }
+    ws.onclose = event => {
+      console.log('disconnected')
+    }
+    let time = 0
+    let element = document.getElementsByTagName('h1')[0]
+    ws.onmessage = event => {
+      if (JSON.parse(event.data).error) document.getElementsByTagName('h1')[0].innerHTML = '💔'
+      else {
+        element.innerHTML = '❤️ ' + JSON.parse(event.data).heartRate
+        time = Date.now()
+      }
+    }
+    setInterval(() => {
+      document.getElementsByTagName('p')[0].innerHTML =
+        '💚 ' +
+        (Math.round((Date.now() - time) / 1000) <= 1 ? 'now' : Math.round((Date.now() - time) / 1000) + ' seconds ago')
+    }, 1000)
+  </script>
+</html>

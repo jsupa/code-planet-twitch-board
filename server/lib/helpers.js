@@ -11,7 +11,7 @@ helpers.verifySignature = req => {
   const headerSignature = req.header('twitch-eventsub-message-signature')
   const { rawBody } = req
 
-  if (!messageID && !messageTimeStamp && !headerSignature && !rawBody) return false
+  if (!messageID || !messageTimeStamp || !headerSignature || !rawBody) return false
 
   const message = messageID + messageTimeStamp + rawBody
 

@@ -1,9 +1,9 @@
 <div id="column">
-  <h1><%= data.payload.emoji %></h1>
+  <h1><%= req.Data().payload.emoji %></h1>
   <br />
-  <h3><%= data.payload.statusCode %></h3>
+  <h3><%= req.Data().payload.statusCode %></h3>
   <br />
-  <p><%= data.payload.message %></p>
+  <p><%= req.Data().payload.message %></p>
   <br />
   <a href="/">Go Home!</a>
 </div>

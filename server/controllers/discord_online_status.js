@@ -1,4 +1,5 @@
 const { Logger } = require('betterlogger.js')
+
 const _data = require('../lib/data')
 const discord = require('../lib/discord')
 const api = require('../api/discord_online_status')
@@ -7,23 +8,24 @@ const TWITCH_SETTINGS = {
   scope: false,
   subscriptionType: 'stream.online'
 }
-
-const logger = new Logger('discord_online_status').setDebugging(99)
-
 const controller = {}
 
-module.exports.index = async (data, req, res) => {
-  data.titleoverwrite = '🗣️ Discord Online Status'
-  data.controller.status = await api.getStatus(data, TWITCH_SETTINGS)
-  data.settings = await controller.readSettings(data)
+controller.name = 'discord_online_status'
 
-  await discord.checkDiscordWebhook(data)
+const logger = new Logger(`CONTROLLER ${controller.name}`).setDebugging(99)
+
+controller.index = async (req, res) => {
+  req.local.data.titleoverwrite = '🗣️ Discord Online Status'
+  req.local.data.controllerStatus = await api.getStatus(req, TWITCH_SETTINGS)
+  req.local.data.settings = await controller.readSettings(req)
+
+  await await discord.checkDiscordWebhook(req)
 
   const FORM_INPUTS = {
     toggle_controller: {
       type: 'toggle',
       label: 'Toggle Controller',
-      value: data.controller.status[0] === 'Online'
+      value: req.Data()?.controllerStatus[0] === 'Online'
     },
     discord_webhook_url: {
       type: 'link',
@@ -91,34 +93,21 @@ module.exports.index = async (data, req, res) => {
     { footer_text: FORM_INPUTS.footer_text, footer_icon_url: FORM_INPUTS.footer_icon_url }
   ]
 
-  const LEGEND_ROWS = [
-    { '{user_name}': 'Twitch Username.' },
-    { '{user_avatar_url}': 'Twitch Avatar URL.' },
-    { '{title}': 'Twitch Title.' },
-    { '{game}': 'Twitch Game.' },
-    { '{time}': 'Current Time.' }
-  ]
+  // const LEGEND_ROWS = [
+  //   { '{user_name}': 'Twitch Username.' },
+  //   { '{user_avatar_url}': 'Twitch Avatar URL.' },
+  //   { '{title}': 'Twitch Title.' },
+  //   { '{game}': 'Twitch Game.' },
+  //   { '{time}': 'Current Time.' }
+  // ]
 
-  if (req.method === 'GET') res.render('controller', { data, FORM_ROWS, LEGEND_ROWS })
-  else if (req.method === 'POST') controller.saveSettings(data, req, res)
+  res.render('controller', { req, FORM_ROWS })
 }
 
-// eslint-disable-next-line no-multi-assign
-module.exports.createDataFile = async data => {
-  const fileData = {}
-  const fileName = data.session.passport.user.data[0].id
-  const direcotry = 'discord_online_status'
-  return new Promise(resolve => {
-    _data.create(direcotry, fileName, fileData, err => {
-      if (err) logger.error(`user id : ${fileName} > ${err}`)
-      resolve(true)
-    })
-  })
-}
+controller.readSettings = async req => {
+  const fileName = req.User()?.id
+  const direcotry = controller.name
 
-controller.readSettings = async data => {
-  const fileName = data.session.passport.user.data[0].id
-  const direcotry = 'discord_online_status'
   return new Promise(resolve => {
     _data.read(direcotry, fileName, (err, fileData) => {
       if (err) logger.error(`user id : ${fileName} > ${err}`)
@@ -127,26 +116,46 @@ controller.readSettings = async data => {
   })
 }
 
-controller.saveSettings = async (data, req, res) => {
+controller.update = async (req, res) => {
   const fileData = {}
-  const fileName = data.session.passport.user.data[0].id
-  const direcotry = 'discord_online_status'
+  const fileName = req.User().id
+  const direcotry = controller.name
   const formData = req.body
   const formKeys = Object.keys(formData)
 
   if (formData.toggle_controller && formData.id === '') {
-    await api.createSubscription(data, TWITCH_SETTINGS)
+    await api.createSubscription(req, TWITCH_SETTINGS)
   }
-  if (!formData.toggle_controller && formData.id !== '') await api.removeSubscription(data, formData.id)
-
-  formKeys.forEach(key => {
-    fileData[key] = formData[key]
-  })
+  if (!formData.toggle_controller && formData.id !== '') await api.removeSubscription(req, formData.id)
 
   return new Promise(resolve => {
+    formKeys.forEach(key => {
+      fileData[key] = formData[key]
+    })
+
     _data.update(direcotry, fileName, fileData, err => {
-      if (err) logger.error(`(saveSettings) user id : ${fileName} > ${err}`)
+      if (err) logger.error(`(update) user id : ${fileName} > ${err}`)
+      req.local.data.alert = 'Saved'
       res.redirect('back')
+      resolve(true)
+    })
+  })
+}
+
+module.exports.methods = [
+  { method: 'GET', path: '/', handler: controller.index },
+  { method: 'POST', path: '/', handler: controller.update },
+  { method: 'GET', path: '/history', handler: controller.history }
+]
+
+controller.createDataFile = async data => {
+  const fileData = {}
+  const fileName = data.session.passport.user.data[0].id
+  const direcotry = controller.name
+
+  return new Promise(resolve => {
+    _data.create(direcotry, fileName, fileData, err => {
+      if (err) logger.error(`user id : ${fileName} > ${err}`)
       resolve(true)
     })
   })
