@@ -42,9 +42,7 @@ controller.index = async (req, res) => {
     { header: 'Description' },
     { text: 'Add your live heart rate to your broadcast. Be closer to your viewers!' },
     {
-      html_safe: `<p>Add this widget url to OBS web source : <a class=link href='${controller.name}/widget/${
-        req.User().id
-      }/${req.Data().settings.webscoket_auth_token}'>widget</a></p>`
+      html_safe: `<p>Add this widget url to OBS web source : <a class=link href='${controller.name}/widget/${req.user.id}/${req.local.data.settings.webscoket_auth_token}'>widget</a></p>`
     },
     { html_safe: '<a class=link href="https://testflight.apple.com/join/r57hqnpE">App on Apple Test Flight</a>' },
     { space: true },
@@ -54,9 +52,7 @@ controller.index = async (req, res) => {
     { space: true },
     { header: 'WebSocket Settings' },
     {
-      html_safe: `<p>WebSocket URL: <a>wss://twitch-demo.code-planet.eu/ws/heart_rate?userid=${req.User().id}&token=${
-        req.Data().settings.webscoket_auth_token
-      }</a><p>`
+      html_safe: `<p>WebSocket URL: <a>wss://twitch-demo.code-planet.eu/ws/heart_rate?userid=${req.user.id}&token=${req.local.data.settings.webscoket_auth_token}</a><p>`
     },
     { webscoket_auth_token: FORM_INPUTS.webscoket_auth_token },
     { space: true },
@@ -68,7 +64,7 @@ controller.index = async (req, res) => {
 }
 
 controller.readSettings = async req => {
-  const fileName = req.User()?.id
+  const fileName = req.user?.id
   const direcotry = controller.name
 
   return new Promise(resolve => {
@@ -93,7 +89,7 @@ controller.readSettingsByUserId = async userId => {
 
 controller.update = async (req, res) => {
   const fileData = {}
-  const fileName = req.User().id
+  const fileName = req.user.id
   const direcotry = controller.name
   const formData = req.body
   const formKeys = Object.keys(formData)

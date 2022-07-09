@@ -29,6 +29,7 @@ app.use(
     }
   })
 )
+
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(cookieParser('QPyae3xxxxxxxxxxxxxxxxMcdK'))
@@ -110,7 +111,7 @@ app.get(
 )
 
 server.init = () => {
-  routes.init(app)
+  routes(app)
 
   app.listen(config.port, () => {
     logger.debug(` Running on http://${ip.address()}:${config.port}`)

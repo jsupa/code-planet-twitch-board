@@ -10,37 +10,16 @@ const routes = {}
 
 const logger = new Logger('routes').setDebugging(99)
 
-routes.init = async app => {
+// eslint-disable-next-line no-multi-assign
+module.exports = routes.init = async app => {
   app.use((req, res, next) => {
-    if (!req.session.views++) req.session.views = 1
-    req.session.ip = req.ip
-    if (!req.session.ips) req.session.ips = []
-    req.session.ips.push(req.ip)
-    req.User = () => {
-      if (req.session.passport) {
-        return {
-          id: req.session.passport.user.data[0].id,
-          login: req.session.passport.user.data[0].login,
-          displayName: req.session.passport.user.data[0].display_name,
-          email: req.session.passport.user.data[0].email,
-          avatar: req.session.passport.user.data[0].profile_image_url,
-          accessToken: req.session.passport.user.accessToken,
-          refreshToken: req.session.passport.user.refreshToken
-        }
-      } else {
-        return null
-      }
-    }
-    req.local = {}
-    req.local.data = {}
-
-    req.Data = () => req.local.data
+    routes.reqInit(req)
 
     const loggerExclude = req.path.indexOf('heart_rate/api') > -1
 
     if (!loggerExclude)
       logger.request(
-        `[HIDDEN] / session views: ${req.session.views} - (${req.User()?.id}, ${req.User()?.email}) > [${
+        `[HIDDEN] / session views: ${req.session.views} - (${req.user?.id}, ${req.user?.email}) > [${
           req.method
         }] /${req.path.replace(/^\/+|\/+$/g, '')} - ${JSON.stringify(req.body)}`
       )
@@ -87,4 +66,17 @@ routes.createRouter = module => {
   return router
 }
 
-module.exports = routes
+routes.reqInit = async req => {
+  if (!req.session.views++) req.session.views = 1
+
+  req.session.ip = req.ip
+
+  req.user = {}
+
+  if (req.session.passport) {
+    ;[req.user] = req.session.passport.user.data
+  }
+
+  req.local = {}
+  req.local.data = {}
+}

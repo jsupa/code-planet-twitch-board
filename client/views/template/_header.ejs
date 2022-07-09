@@ -1,10 +1,10 @@
-<% const user = req.User() %> <% const data = req.Data() %>
+<% const user = req.user %> <% const data = req.local.data %>
 
 <div class="header">
   <% if (!data.titleoverwrite){ %>
-  <img class="w50px rounded center m10h" src="<%= user.avatar  %> " />
+  <img class="w50px rounded center m10h" src="<%= user.profile_image_url  %> " />
   <h2 class="m10h">
-    👋 Welcome back <a href="https://twitch.tv/<%= user.displayName %>" class="link"><%= user.displayName %></a>
+    👋 Welcome back <a href="https://twitch.tv/<%= user.login %>" class="link"><%= user.display_name %></a>
   </h2>
   <% } else { %>
   <h2><%= data.titleoverwrite %></h2>

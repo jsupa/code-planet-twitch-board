@@ -11,7 +11,7 @@ discord.checkDiscordWebhook = async req =>
   new Promise(resolve => {
     request(
       {
-        url: req.Data()?.settings.discord_webhook_url
+        url: req.local.data?.settings.discord_webhook_url
       },
       (err, res, body) => {
         if (err) {
@@ -19,16 +19,14 @@ discord.checkDiscordWebhook = async req =>
           resolve(null)
         } else if (res.headers['content-type'] !== 'application/json') {
           logger.error(
-            `(GET ${req.User().id}) ${res.statusCode} ${res.statusMessage} - INVALID CONTENT TYPE : ${
-              res.headers['content-type']
-            }`
+            `(GET ${req.user.id}) ${res.statusCode} ${res.statusMessage} - INVALID CONTENT TYPE : ${res.headers['content-type']}`
           )
           req.local.data.alert = 'Invalid Discord Webhook URL'
           resolve(null)
         } else {
           const parsedBody = JSON.parse(body)
           logger.info(
-            `(GET ${req.User().id}) ${res.statusCode} ${res.statusMessage} - ${parsedBody.message || parsedBody.id}`
+            `(GET ${req.user.id}) ${res.statusCode} ${res.statusMessage} - ${parsedBody.message || parsedBody.id}`
           )
           if (!parsedBody.id) req.local.data.alert = parsedBody.message || 'Invalid Discord Webhook URL'
           resolve(true)

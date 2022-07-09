@@ -3,7 +3,7 @@ const eventSub = require('../lib/twitch-event-sub')
 const api = {}
 
 api.getStatus = async (req, settings) => {
-  const user = req.User()
+  const { user } = req
   const { subscriptionType } = settings
 
   const subscription = await eventSub.getSubscription(user, subscriptionType)
@@ -15,14 +15,14 @@ api.getStatus = async (req, settings) => {
 }
 
 api.createSubscription = async (req, settings) => {
-  const user = req.User()
+  const { user } = req
   const { subscriptionType } = settings
   await eventSub.createSubscription(user, subscriptionType)
   return true
 }
 
 api.removeSubscription = async (req, webhookId) => {
-  const user = req.User()
+  const { user } = req
   await eventSub.deleteSubscription(user, webhookId)
   return true
 }

@@ -1,4 +1,4 @@
-<% const reqData = req.Data() %>
+<% const reqData = req.local.data %>
 <% if(locals.FORM_ROWS){ %> 
   <form method="post">
     <% FORM_ROWS.forEach(row => { %>

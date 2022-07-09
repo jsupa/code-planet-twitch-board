@@ -25,7 +25,7 @@ controller.index = async (req, res) => {
     toggle_controller: {
       type: 'toggle',
       label: 'Toggle Controller',
-      value: req.Data()?.controllerStatus[0] === 'Online'
+      value: req.local.data?.controllerStatus[0] === 'Online'
     },
     discord_webhook_url: {
       type: 'link',
@@ -105,7 +105,7 @@ controller.index = async (req, res) => {
 }
 
 controller.readSettings = async req => {
-  const fileName = req.User()?.id
+  const fileName = req.user?.id
   const direcotry = controller.name
 
   return new Promise(resolve => {
@@ -118,7 +118,7 @@ controller.readSettings = async req => {
 
 controller.update = async (req, res) => {
   const fileData = {}
-  const fileName = req.User().id
+  const fileName = req.user.id
   const direcotry = controller.name
   const formData = req.body
   const formKeys = Object.keys(formData)
@@ -144,8 +144,8 @@ controller.update = async (req, res) => {
 
 module.exports.methods = [
   { method: 'GET', path: '/', handler: controller.index },
-  { method: 'POST', path: '/', handler: controller.update },
-  { method: 'GET', path: '/history', handler: controller.history }
+  { method: 'POST', path: '/', handler: controller.update }
+  // { method: 'GET', path: '/history', handler: controller.history }
 ]
 
 controller.createDataFile = async data => {

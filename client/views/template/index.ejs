@@ -24,7 +24,7 @@
     </div>
 
     <div id="main">
-      <% if (req.User()?.id){ %>
+      <% if (req.user?.id){ %>
       <div id="header"><%- include('_header') %></div>
       <div class="vertical_center"><%- body %></div>
       <% }%>
