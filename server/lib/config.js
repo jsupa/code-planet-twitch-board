@@ -1,6 +1,7 @@
 const config = {}
 config.twitch = {}
 
+config.env = process.env.NODE_ENV || 'production'
 config.port = process.env.PORT || 1337
 config.wsPort = process.env.WS_PORT || 1338
 config.hashingSecret = process.env.HASHING_SECRET || 'secret'

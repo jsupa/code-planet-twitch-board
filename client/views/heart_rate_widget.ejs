@@ -31,6 +31,11 @@
   <script>
     let url =
       'wss://twitch-demo.code-planet.eu/ws/heart_rate/?userid=<%= req.params.userid  %>&token=<%= req.params.token %>'
+
+    <% if (req.local.env === 'development'){ %>
+      url = 'ws://127.0.0.1:1213/ws/heart_rate/?userid=<%= req.params.userid  %>&token=<%= req.params.token %>'
+    <% } %>
+
     let ws = new WebSocket(url)
 
     ws.onopen = event => {

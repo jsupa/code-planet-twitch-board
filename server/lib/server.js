@@ -55,60 +55,62 @@ app.set('trust proxy', true)
 app.set('view engine', 'ejs')
 app.set('views', './client/views')
 
-OAuth2Strategy.prototype.userProfile = function (accessToken, done) {
-  const options = {
-    url: 'https://api.twitch.tv/helix/users',
-    method: 'GET',
-    headers: {
-      'Client-ID': config.twitch.clientID,
-      Accept: 'application/vnd.twitchtv.v5+json',
-      Authorization: `Bearer ${accessToken}`
+if (config.env === 'production') {
+  OAuth2Strategy.prototype.userProfile = function (accessToken, done) {
+    const options = {
+      url: 'https://api.twitch.tv/helix/users',
+      method: 'GET',
+      headers: {
+        'Client-ID': config.twitch.clientID,
+        Accept: 'application/vnd.twitchtv.v5+json',
+        Authorization: `Bearer ${accessToken}`
+      }
     }
+
+    request(options, (error, response, body) => {
+      if (response && response.statusCode === 200) {
+        done(null, JSON.parse(body))
+      } else {
+        done(JSON.parse(body))
+      }
+    })
   }
 
-  request(options, (error, response, body) => {
-    if (response && response.statusCode === 200) {
-      done(null, JSON.parse(body))
-    } else {
-      done(JSON.parse(body))
-    }
-  })
-}
+  passport.use(
+    'twitch',
+    new OAuth2Strategy(
+      {
+        authorizationURL: 'https://id.twitch.tv/oauth2/authorize',
+        tokenURL: 'https://id.twitch.tv/oauth2/token',
+        clientID: config.twitch.clientID,
+        clientSecret: config.twitch.clientSecret,
+        callbackURL: config.twitch.callbackURL,
+        state: true
+      },
+      (accessToken, refreshToken, profile, done) => {
+        profile.accessToken = accessToken
+        profile.refreshToken = refreshToken
 
-passport.use(
-  'twitch',
-  new OAuth2Strategy(
-    {
-      authorizationURL: 'https://id.twitch.tv/oauth2/authorize',
-      tokenURL: 'https://id.twitch.tv/oauth2/token',
-      clientID: config.twitch.clientID,
-      clientSecret: config.twitch.clientSecret,
-      callbackURL: config.twitch.callbackURL,
-      state: true
-    },
-    (accessToken, refreshToken, profile, done) => {
-      profile.accessToken = accessToken
-      profile.refreshToken = refreshToken
-
-      done(null, profile)
-    }
+        done(null, profile)
+      }
+    )
   )
-)
 
-passport.serializeUser((user, done) => {
-  done(null, user)
-})
+  passport.serializeUser((user, done) => {
+    done(null, user)
+  })
 
-passport.deserializeUser((user, done) => {
-  done(null, user)
-})
+  passport.deserializeUser((user, done) => {
+    done(null, user)
+  })
 
-app.get('/auth/twitch', passport.authenticate('twitch', { scope: 'user_read' }))
+  app.get('/auth/twitch', passport.authenticate('twitch', { scope: 'user_read' }))
 
-app.get(
-  '/auth/twitch/callback',
-  passport.authenticate('twitch', { failureRedirect: '/?auth=false', successRedirect: '/' })
-)
+  app.get(
+    '/auth/twitch/callback',
+    passport.authenticate('twitch', { failureRedirect: '/?auth=false', successRedirect: '/' })
+  )
+}
 
 server.init = () => {
   routes(app)

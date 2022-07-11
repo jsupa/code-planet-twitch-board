@@ -113,9 +113,9 @@ controller.widget = async (req, res) => {
   res.render('heart_rate_widget', { layout: false, req })
 }
 
-controller.createDataFile = async data => {
+controller.createDataFile = async req => {
   const fileData = {}
-  const fileName = data.session.passport.user.data[0].id
+  const fileName = req.user.id
   const direcotry = controller.name
 
   return new Promise(resolve => {
