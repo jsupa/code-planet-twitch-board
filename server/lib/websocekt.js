@@ -31,7 +31,7 @@ server.sendMessage = (watchToken, heartRate) => {
 }
 
 server.init = () => {
-  logger.debug(`Running on ws://${ip.address()}:${config.wsPort}`)
+  logger.info(`Running on ws://${ip.address()}:${config.wsPort}`)
 }
 
 module.exports = server

@@ -75,7 +75,7 @@ routes.reqInit = async req => {
   req.user = {}
 
   if (req.session.passport) {
-    ;[req.user] = req.session.passport.user.data
+    req.user = req.session.passport.user.data
   }
 
   if (config.env === 'development') {

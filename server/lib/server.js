@@ -10,13 +10,14 @@ const expressLayouts = require('express-ejs-layouts')
 const passport = require('passport')
 const { OAuth2Strategy } = require('passport-oauth')
 const { Logger } = require('betterlogger.js')
-// ! v buducnosti prejsť na mongo alebo redis
-const JsonStore = require('express-session-json')(session)
+const mongoose = require('mongoose')
+const MongoDBStore = require('express-mongodb-session')(session)
 
 const logger = new Logger('server').setDebugging(99)
 
 const config = require('./config')
 const routes = require('./routes')
+const mongo = require('./mongo')
 
 const app = express()
 
@@ -39,8 +40,9 @@ app.use(
     name: 'oreo',
     resave: false,
     saveUninitialized: true,
-    store: new JsonStore({
-      path: './data/'
+    store: new MongoDBStore({
+      uri: config.mongo,
+      collection: 'sessions'
     })
   })
 )
@@ -114,9 +116,10 @@ if (config.env === 'production') {
 
 server.init = () => {
   routes(app)
+  mongo(mongoose)
 
   app.listen(config.port, () => {
-    logger.debug(` Running on http://${ip.address()}:${config.port}`)
+    logger.info(` Running on http://${ip.address()}:${config.port}`)
   })
 }
 

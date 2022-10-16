@@ -5,6 +5,7 @@ config.env = process.env.NODE_ENV || 'production'
 config.port = process.env.PORT || 1337
 config.wsPort = process.env.WS_PORT || 1338
 config.hashingSecret = process.env.HASHING_SECRET || 'secret'
+config.mongo = process.env.MONGO || 'mongodb://localhost:27017/oreo'
 config.twitch.clientID = process.env.TWITCH_CLIENT_ID || 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 config.twitch.clientSecret = process.env.TWITCH_CLIENT_SECRET || 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 config.twitch.bearer = process.env.TWITCH_CLIENT_BEARER || 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
